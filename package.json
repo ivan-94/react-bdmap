@@ -48,10 +48,13 @@
     }
   },
   "devDependencies": {
+    "@types/baidumap-web-sdk": "^2.0.3",
+    "@types/lodash": "^4.14.118",
     "@types/react": "^16.7.6",
     "@types/react-dom": "^16.0.9",
     "cpx": "^1.5.0",
     "husky": "^1.2.0",
+    "parcel": "^1.10.3",
     "prettier": "^1.15.2",
     "pretty-quick": "^1.8.0",
     "react": "^16.6.3",
@@ -60,6 +63,7 @@
     "typescript": "^3.1.6"
   },
   "dependencies": {
+    "lodash": "^4.17.11",
     "tslib": "^1.9.3"
   }
 }
