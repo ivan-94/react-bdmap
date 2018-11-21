@@ -1,6 +1,7 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
 import BDMap from '../src/BDMap'
+import NavigationControl from '../src/NavigationControl'
 import './style.css'
 import { Coord } from '../src/type'
 
@@ -11,6 +12,7 @@ class App extends React.Component {
     dragging: boolean
     mapStyle?: number
     clickHandler?: (evt: any) => void
+    anchor?: BMap.ControlAnchor
   } = {
     center: {
       lat: 39.915,
@@ -33,7 +35,9 @@ class App extends React.Component {
           enableDragging={this.state.dragging}
           mapStyle={this.state.mapStyle}
           onClick={this.state.clickHandler}
-        />
+        >
+          <NavigationControl anchor={this.state.anchor} enableGeolocation />
+        </BDMap>
         <div>
           <button
             onClick={() => {
@@ -59,6 +63,10 @@ class App extends React.Component {
           <button onClick={this.handleMove}>move</button>
           <button onClick={() => this.setState({ clickHandler: (v: any) => console.log(v) })}>add Click Handler</button>
           <button onClick={() => this.setState({ clickHandler: undefined })}>remove Click Handler</button>
+          <hr />
+          <button onClick={() => this.setState({ anchor: BMAP_ANCHOR_BOTTOM_LEFT })}>←</button>
+          <button onClick={() => this.setState({ anchor: BMAP_ANCHOR_BOTTOM_RIGHT })}>→</button>
+          <button onClick={() => this.setState({ anchor: undefined })}>default</button>
         </div>
       </div>
     )
