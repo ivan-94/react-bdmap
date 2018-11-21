@@ -8,11 +8,14 @@ class App extends React.Component {
   public state: {
     center?: Coord
     zoom: number
+    dragging: boolean
+    mapStyle?: number
   } = {
     center: {
       lat: 39.915,
       lng: 116.404,
     },
+    dragging: true,
     zoom: 15,
   }
   public render() {
@@ -26,6 +29,8 @@ class App extends React.Component {
           center={this.state.center}
           zoom={this.state.zoom}
           enableScrollWheelZoom
+          enableDragging={this.state.dragging}
+          mapStyle={this.state.mapStyle}
         />
         <div>
           <button
@@ -42,6 +47,14 @@ class App extends React.Component {
           >
             - zoom
           </button>
+          <button
+            onClick={() => {
+              this.setState({ dragging: !this.state.dragging })
+            }}
+          >
+            toggle dragging
+          </button>
+          <button onClick={this.handleMove}>move</button>
         </div>
       </div>
     )
@@ -50,6 +63,13 @@ class App extends React.Component {
   private handleReady = () => {
     const center = new BMap.Point(116.404, 39.915)
     this.setState({ center })
+  }
+
+  private handleMove = () => {
+    const center = this.state.center
+    if (center) {
+      this.setState({ center: new BMap.Point(center.lng + Math.random(), center.lat + Math.random()) })
+    }
   }
 }
 

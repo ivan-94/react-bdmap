@@ -2,9 +2,10 @@
  * Map Container
  */
 import React from 'react'
-import { Coord } from './type'
-import { delay, importScript, isAndroid } from './utils'
 import upperFirst from 'lodash/upperFirst'
+import { delay, importScript, isAndroid } from './utils'
+import { Coord } from './type'
+import { BDMAP_PROPERTIES } from './constants'
 
 export interface BDMapProps {
   // api key
@@ -26,11 +27,12 @@ export interface BDMapProps {
   minZoom?: number
   maxZoom?: number
   mapStyle?: number
+  /**
+   * controlled properties
+   */
   defaultZoom?: number
-  // 受控模式zoom
   zoom?: number
   defaultCenter?: BMap.Point
-  // 受控模式
   center?: BMap.Point
 
   /**
@@ -58,17 +60,6 @@ interface State {
 }
 
 const DEFAULT_RETRY_TIME = 3
-const enablableProperties = [
-  'dragging',
-  'scrollWheelZoom',
-  'doubleClickZoom',
-  'keyboard',
-  'inertialDragging',
-  'continuousZoom',
-  'pinchToZoom',
-  'autoResize',
-]
-const settableProperties = ['minZoom', 'maxZoom', 'mapStyle', 'zoom']
 
 export const BDMapContext = React.createContext<BDMapContextValue>({})
 
@@ -102,18 +93,41 @@ export default class BDMap extends React.Component<BDMapProps, State> {
       return
     }
 
-    if (this.props.center && this.props.center !== prevProps.center) {
-      this.map.centerAndZoom(this.props.center, this.props.zoom || this.props.defaultZoom!)
-    }
-
-    settableProperties.forEach(name => {
+    BDMAP_PROPERTIES.forEach(property => {
+      const { name, type, defaultValue, method } = property
       const upperName = upperFirst(name)
-      // TODO: 处理默认值
-      if (this.props[name] !== prevProps[name]) {
-        const value = this.props[name]
-        const methodName = `set${upperName}`
-        if (typeof this.map[methodName] === 'function') {
-          this.map[methodName](value)
+
+      if (type === 'enableable') {
+        const propsName = `enable${upperName}`
+
+        if (this.props[propsName] !== prevProps[propsName]) {
+          const value = this.props[propsName] != null ? this.props[propsName] : defaultValue
+          const methodName = value ? propsName : `disable${upperName}`
+
+          if (typeof this.map[methodName] === 'function') {
+            this.map[methodName](value)
+          }
+        }
+      } else {
+        if (this.props[name] !== prevProps[name]) {
+          const defaultPropsName = `default${upperName}`
+          const value =
+            this.props[name] != null
+              ? this.props[name]
+              : this.props[defaultPropsName] != null
+              ? this.props[defaultPropsName]
+              : typeof defaultValue === 'function'
+              ? defaultValue()
+              : defaultValue
+          if (method) {
+            method(this.map, this.props, value)
+            return
+          }
+
+          const methodName = `set${upperName}`
+          if (typeof this.map[methodName] === 'function') {
+            this.map[methodName](value)
+          }
         }
       }
     })
@@ -156,38 +170,40 @@ export default class BDMap extends React.Component<BDMapProps, State> {
    * initialize BDMap instance
    */
   private initializeMap = () => {
+    // TODO: 处理固定参数
     const map = new BMap.Map(this.el.current!, {
       enableMapClick: true,
     })
 
     // initialize properties
-    enablableProperties.forEach(name => {
-      const propsName = `enable${upperFirst(name)}`
-      if (this.props[propsName] != null) {
-        const methodName = this.props[propsName] ? propsName : `disable${upperFirst(name)}`
-        if (typeof map[methodName] === 'function') {
-          map[methodName]()
-        }
-      }
-    })
-
-    settableProperties.forEach(name => {
+    BDMAP_PROPERTIES.forEach(property => {
+      const { name, type, method } = property
       const upperName = upperFirst(name)
-      const defaultPropsName = `default${upperName}`
-      const value = this.props[name] || this.props[defaultPropsName]
-      if (value != null) {
-        const methodName = `set${upperName}`
-        if (typeof map[methodName] === 'function') {
-          map[methodName](value)
+
+      if (type === 'enableable') {
+        const propsName = `enable${upperName}`
+        if (this.props[propsName] != null) {
+          const methodName = this.props[propsName] ? propsName : `disable${upperName}`
+          if (typeof map[methodName] === 'function') {
+            map[methodName]()
+          }
+        }
+      } else {
+        // settable
+        const defaultPropsName = `default${upperName}`
+        const value = this.props[name] || this.props[defaultPropsName]
+        if (value != null) {
+          if (method) {
+            method(map, this.props, value)
+            return
+          }
+          const methodName = `set${upperName}`
+          if (typeof map[methodName] === 'function') {
+            map[methodName](value)
+          }
         }
       }
     })
-
-    const { zoom, defaultZoom, center, defaultCenter } = this.props
-    if (center || defaultCenter) {
-      // 必须为BMap.Point 类型才行！
-      map.centerAndZoom(center || defaultCenter!, zoom || defaultZoom!)
-    }
 
     // TODO: 支持更多事件
     map.onclick = this.handleClick
