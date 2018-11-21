@@ -27,3 +27,5 @@ export const BDMAP_PROPERTIES = [
   { name: 'mapStyle', type: 'settable', defaultValue: () => BMap && BMAP_NORMAL_MAP },
   { name: 'zoom', type: 'settable', defaultValue: 15 },
 ]
+
+export const BDMAP_CUSTOM_EVENT = ['ready']

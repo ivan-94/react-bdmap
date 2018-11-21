@@ -3,9 +3,9 @@
  */
 import React from 'react'
 import upperFirst from 'lodash/upperFirst'
+import lowerFirst from 'lodash/lowerFirst'
 import { delay, importScript, isAndroid } from './utils'
-import { Coord } from './type'
-import { BDMAP_PROPERTIES } from './constants'
+import { BDMAP_PROPERTIES, BDMAP_CUSTOM_EVENT } from './constants'
 
 export interface BDMapProps {
   // api key
@@ -36,9 +36,50 @@ export interface BDMapProps {
   center?: BMap.Point
 
   /**
-   * events
+   * events from Native Map
    */
-  onClick?: (point: Coord, overlay: BMap.Overlay | null) => void
+  onClick?: (event: { type: string; target: any; point: BMap.Point; pixel: BMap.Pixel; overlay: BMap.Overlay }) => void
+  onDblclick?: (event: { type: string; target: any; point: BMap.Point; pixel: BMap.Pixel }) => void
+  onRightclick?: (
+    event: { type: string; target: any; point: BMap.Point; pixel: BMap.Pixel; overlay: BMap.Overlay },
+  ) => void
+  onRightdblclick?: (
+    event: { type: string; target: any; point: BMap.Point; pixel: BMap.Pixel; overlay: BMap.Overlay },
+  ) => void
+  onMaptypechange?: (event: { type: string; target: any }) => void
+  onMousemove?: (
+    event: { type: string; target: any; point: BMap.Point; pixel: BMap.Pixel; overlay: BMap.Overlay },
+  ) => void
+  onMouseover?: (event: { type: string; target: any }) => void
+  onMouseout?: (event: { type: string; target: any }) => void
+  onMovestart?: (event: { type: string; target: any }) => void
+  onMoving?: (event: { type: string; target: any }) => void
+  onMoveend?: (event: { type: string; target: any }) => void
+  onZoomstart?: (event: { type: string; target: any }) => void
+  onZoomend?: (event: { type: string; target: any }) => void
+  onAddoverlay?: (event: { type: string; target: any }) => void
+  onAddcontrol?: (event: { type: string; target: any }) => void
+  onRemovecontrol?: (event: { type: string; target: any }) => void
+  onRemoveoverlay?: (event: { type: string; target: any }) => void
+  onClearoverlays?: (event: { type: string; target: any }) => void
+  onDragstart?: (event: { type: string; target: any; point: BMap.Point; pixel: BMap.Pixel }) => void
+  onDragging?: (event: { type: string; target: any; point: BMap.Point; pixel: BMap.Pixel }) => void
+  onDragend?: (event: { type: string; target: any; point: BMap.Point; pixel: BMap.Pixel }) => void
+  onAddtilelayer?: (event: { type: string; target: any }) => void
+  onRemovetilelayer?: (event: { type: string; target: any }) => void
+  onLoad?: (event: { type: string; target: any; point: BMap.Point; pixel: BMap.Pixel; zoom: number }) => void
+  onResize?: (event: { type: string; target: any; size: BMap.Size }) => void
+  onHotspotclick?: (event: { type: string; target: any; spots: BMap.HotspotOptions }) => void
+  onHotspotover?: (event: { type: string; target: any; spots: BMap.HotspotOptions }) => void
+  onHotspotout?: (event: { type: string; target: any; spots: BMap.HotspotOptions }) => void
+  onTilesloaded?: (event: { type: string; target: any }) => void
+  onTouchstart?: (event: { type: string; target: any; point: BMap.Point; pixel: BMap.Pixel }) => void
+  onTouchmove?: (event: { type: string; target: any; point: BMap.Point; pixel: BMap.Pixel }) => void
+  onTouchend?: (event: { type: string; target: any; point: BMap.Point; pixel: BMap.Pixel }) => void
+  onLongpress?: (event: { type: string; target: any; point: BMap.Point; pixel: BMap.Pixel }) => void
+  /**
+   * event for BDMap
+   */
   onReady?: (ref: BMap.Map) => void
 }
 
@@ -131,6 +172,19 @@ export default class BDMap extends React.Component<BDMapProps, State> {
         }
       }
     })
+
+    // update eventListeners
+    Object.keys(this.props).forEach(key => {
+      if (key.startsWith('on')) {
+        if (this.props[key] !== prevProps[key]) {
+          let [, eventName] = key.match(/^on(.*)$/)!
+          eventName = lowerFirst(eventName)
+          if (BDMAP_CUSTOM_EVENT.indexOf(eventName) === -1) {
+            this.map[`on${eventName}`] = this.props[key]
+          }
+        }
+      }
+    })
   }
 
   public render() {
@@ -205,8 +259,16 @@ export default class BDMap extends React.Component<BDMapProps, State> {
       }
     })
 
-    // TODO: 支持更多事件
-    map.onclick = this.handleClick
+    // initialize events
+    Object.keys(this.props).forEach(key => {
+      if (key.startsWith('on') && typeof this.props[key] === 'function') {
+        let [, eventName] = key.match(/^on(.*)$/)!
+        eventName = lowerFirst(eventName)
+        if (BDMAP_CUSTOM_EVENT.indexOf(eventName) === -1) {
+          map[`on${eventName}`] = this.props[key]
+        }
+      }
+    })
 
     if (isAndroid) {
       ;(map as any).addEventListener('touchstart', () => {
@@ -244,17 +306,5 @@ export default class BDMap extends React.Component<BDMapProps, State> {
         }
       },
     )
-  }
-
-  private handleClick = (event: { point: BMap.Point; pixel: BMap.Pixel; overlay: BMap.Overlay }) => {
-    if (this.props.onClick) {
-      this.props.onClick(
-        {
-          lat: event.point.lat,
-          lng: event.point.lng,
-        },
-        event.overlay,
-      )
-    }
   }
 }

@@ -10,6 +10,7 @@ class App extends React.Component {
     zoom: number
     dragging: boolean
     mapStyle?: number
+    clickHandler?: (evt: any) => void
   } = {
     center: {
       lat: 39.915,
@@ -31,6 +32,7 @@ class App extends React.Component {
           enableScrollWheelZoom
           enableDragging={this.state.dragging}
           mapStyle={this.state.mapStyle}
+          onClick={this.state.clickHandler}
         />
         <div>
           <button
@@ -55,6 +57,8 @@ class App extends React.Component {
             toggle dragging
           </button>
           <button onClick={this.handleMove}>move</button>
+          <button onClick={() => this.setState({ clickHandler: (v: any) => console.log(v) })}>add Click Handler</button>
+          <button onClick={() => this.setState({ clickHandler: undefined })}>remove Click Handler</button>
         </div>
       </div>
     )
