@@ -1,0 +1,65 @@
+{
+  "name": "react-bdmap",
+  "version": "0.1.0",
+  "description": "Baidu Map Components for React",
+  "keywords": [
+    "react",
+    "bdmap",
+    "baidu",
+    "map",
+    "web"
+  ],
+  "main": "lib/index.js",
+  "module": "es/index.js",
+  "typings": "es/index.d.ts",
+  "scripts": {
+    "prebuild": "rimraf lib es",
+    "build:es6": "tsc -d --outDir ./lib --module CommonJS ",
+    "postbuild:es6": "cpx \"src/**/!(example)/*.+(css|jpg|jpeg|gif|png)\" ./lib",
+    "postbuild:es6module": "cpx \"src/**/!(example)/*.+(css|jpg|jpeg|gif|png)\" ./es",
+    "build:es6module": "tsc -d --outDir ./es",
+    "build": "npm run build:es6 && npm run build:es6module"
+  },
+  "files": [
+    "lib",
+    "es"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/carney520/react-bdmap.git"
+  },
+  "author": "carney520",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/carney520/react-bdmap/issues"
+  },
+  "homepage": "https://github.com/carney520/react-bdmap#readme",
+  "prettier": {
+    "semi": false,
+    "singleQuote": true,
+    "tabWidth": 2,
+    "printWidth": 120,
+    "trailingComma": "all",
+    "arrowParens": "avoid"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "pretty-quick --staged"
+    }
+  },
+  "devDependencies": {
+    "@types/react": "^16.7.6",
+    "@types/react-dom": "^16.0.9",
+    "cpx": "^1.5.0",
+    "husky": "^1.2.0",
+    "prettier": "^1.15.2",
+    "pretty-quick": "^1.8.0",
+    "react": "^16.6.3",
+    "react-dom": "^16.6.3",
+    "rimraf": "^2.6.2",
+    "typescript": "^3.1.6"
+  },
+  "dependencies": {
+    "tslib": "^1.9.3"
+  }
+}

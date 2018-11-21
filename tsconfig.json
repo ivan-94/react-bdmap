@@ -1,0 +1,27 @@
+{
+  // 我们使用babel对文件进行编译，所以不会有任何输出
+  "compilerOptions": {
+    "target": "es5",
+    "lib": ["esnext", "dom"],
+    "module": "esnext",
+    "esModuleInterop": true,
+    "moduleResolution": "node",
+    "importHelpers": true,
+    "sourceMap": false,
+    "rootDir": "src",
+    "allowSyntheticDefaultImports": true,
+    "resolveJsonModule": true,
+    "jsx": "react",
+    "downlevelIteration": true,
+    "forceConsistentCasingInFileNames": true,
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
+    "strict": true,
+    "strictPropertyInitialization": false,
+    "noImplicitReturns": true,
+    "noUnusedLocals": true,
+    "suppressImplicitAnyIndexErrors": true,
+    "skipLibCheck": true
+  },
+  "exclude": ["node_modules", "dist"]
+}
