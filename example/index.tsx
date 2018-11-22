@@ -14,6 +14,7 @@ import Label from '../src/overlays/Label'
 import Polyline from '../src/overlays/Polyline'
 import Polygon from '../src/overlays/Polygon'
 import Circle from '../src/overlays/Circle'
+import CustomOverlay from '../src/overlays/CustomOverlay'
 
 function log(e: any) {
   console.log(e)
@@ -86,6 +87,12 @@ class App extends React.Component {
                           title="test"
                         />
                         <Label position={this.state.current} content="label" />
+                        <CustomOverlay position={this.state.current}>
+                          <div
+                            className="test-custom"
+                            style={{ width: '100px', height: '100px', background: 'blue' }}
+                          />
+                        </CustomOverlay>
                       </>
                     )}
                     <Circle center={this.state.center} radius={100} fillOpacity={0.7} fillColor="gree" />

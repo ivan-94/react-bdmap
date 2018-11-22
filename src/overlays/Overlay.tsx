@@ -24,8 +24,13 @@ export default abstract class Overlay<P> extends React.PureComponent<OverlayProp
    */
   protected extendedEnableableProperties: string[] = []
   protected extendedEvents: string[] = []
+  protected initialize?: () => void
 
   public componentDidMount() {
+    if (this.initialize) {
+      this.initialize()
+    }
+
     if (this.instance && this.context) {
       this.initialProperties()
       this.context.nativeInstance!.addOverlay(this.instance)
