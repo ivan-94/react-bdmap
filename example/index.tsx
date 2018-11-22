@@ -10,6 +10,7 @@ import GeolocationControl from '../src/controls/GeolocationControl'
 import CustomControl from '../src/controls/CustomControl'
 import Marker from '../src/overlays/Marker'
 import './style.css'
+import Label from '../src/overlays/Label'
 
 function log(e: any) {
   console.log(e)
@@ -74,12 +75,15 @@ class App extends React.Component {
                       }}
                     />
                     {!!this.state.current && (
-                      <Marker
-                        position={this.state.current}
-                        enableDragging
-                        onChange={this.handleCurrentChange}
-                        title="test"
-                      />
+                      <>
+                        <Marker
+                          position={this.state.current}
+                          enableDragging
+                          onChange={this.handleCurrentChange}
+                          title="test"
+                        />
+                        <Label position={this.state.current} content="label" />
+                      </>
                     )}
                   </>
                 )}
