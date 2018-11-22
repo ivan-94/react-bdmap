@@ -3,19 +3,31 @@ import ReactDOM from 'react-dom'
 import BDMap from '../src/BDMap'
 import NavigationControl from '../src/NavigationControl'
 import OverviewMapControl from '../src/OverviewMapControl'
+import ScaleControl from '../src/ScaleControl'
+import MapTypeControl from '../src/MapTypeControl'
+import CopyrightControl from '../src/CopyrightControl'
+import GeolocationControl from '../src/GeolocationControl'
+import CustomControl from '../src/CustomControl'
 import './style.css'
 import { Coord } from '../src/type'
+
+function log(e: any) {
+  console.log(e)
+}
 
 class App extends React.Component {
   public state: {
     center?: Coord
     zoom: number
+    count: number
     dragging: boolean
     mapStyle?: number
     clickHandler?: (evt: any) => void
     anchor?: BMap.ControlAnchor
     showControls?: boolean
+    bounds?: BMap.Bounds
   } = {
+    count: 0,
     center: {
       lat: 39.915,
       lng: 116.404,
@@ -39,17 +51,36 @@ class App extends React.Component {
           mapStyle={this.state.mapStyle}
           onClick={this.state.clickHandler}
         >
-          {this.state.showControls && (
-            <>
-              <NavigationControl anchor={this.state.anchor} enableGeolocation />
-              <OverviewMapControl
-                defaultOpen
-                onViewChanged={() => {
-                  console.log('view changed')
-                }}
-              />
-            </>
-          )}
+          {() => {
+            return (
+              <>
+                {this.state.showControls && (
+                  <>
+                    <NavigationControl anchor={this.state.anchor} enableGeolocation />
+                    <CustomControl anchor={BMAP_ANCHOR_BOTTOM_RIGHT}>
+                      <div onClick={this.handleCustomControlClick}>hello CustomControl {this.state.count}</div>
+                    </CustomControl>
+                    <ScaleControl />
+                    <MapTypeControl />
+                    <GeolocationControl onLocationSuccess={log} onLocationError={log} />
+                    <CopyrightControl>
+                      {!!this.state.bounds && (
+                        <CopyrightControl.Copyright bounds={this.state.bounds}>
+                          <div style={{ background: 'red' }}>测试Copyright</div>
+                        </CopyrightControl.Copyright>
+                      )}
+                    </CopyrightControl>
+                    <OverviewMapControl
+                      defaultOpen
+                      onViewchanged={() => {
+                        console.log('view changed')
+                      }}
+                    />
+                  </>
+                )}
+              </>
+            )
+          }}
         </BDMap>
         <div>
           <button
@@ -86,9 +117,16 @@ class App extends React.Component {
     )
   }
 
-  private handleReady = () => {
+  private handleReady = (map: BMap.Map) => {
     const center = new BMap.Point(116.404, 39.915)
     this.setState({ center })
+    setTimeout(() => {
+      this.setState({ bounds: map.getBounds() })
+    }, 1000)
+  }
+
+  private handleCustomControlClick = () => {
+    this.setState({ count: this.state.count + 1 })
   }
 
   private handleMove = () => {

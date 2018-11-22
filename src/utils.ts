@@ -1,3 +1,5 @@
+import upperFirst from 'lodash/upperFirst'
+
 const UA = navigator.userAgent.toLowerCase()
 export const isMac = UA.indexOf('macintosh') !== -1
 export const isWindows = UA.indexOf('windows') !== -1
@@ -37,5 +39,29 @@ export function importScript(src: string): Promise<void> {
     }
     headElement.appendChild(script)
     script.src = src
+  })
+}
+
+export function initializeSettableProperties(properties: string[], instance: object, props: object) {
+  properties.forEach(property => {
+    const value = props[property]
+    if (value != null) {
+      const methodName = `set${upperFirst(property)}`
+      if (typeof instance[methodName] === 'function') {
+        instance[methodName](value)
+      }
+    }
+  })
+}
+
+export function updateSettableProperties(properties: string[], instance: object, props: object, prevProps: object) {
+  properties.forEach(property => {
+    if (props[property] !== prevProps[property]) {
+      const value = props[property]
+      const methodName = `set${upperFirst(property)}`
+      if (typeof instance[methodName] === 'function') {
+        instance[methodName](value)
+      }
+    }
   })
 }

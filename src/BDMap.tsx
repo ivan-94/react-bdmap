@@ -81,6 +81,7 @@ export interface BDMapProps {
    * event for BDMap
    */
   onReady?: (ref: BMap.Map) => void
+  children?: ((map: BMap.Map) => React.ReactNode)
 }
 
 export interface BDMapContextValue {
@@ -194,7 +195,7 @@ export default class BDMap extends React.Component<BDMapProps, State> {
     return (
       <BDMapContext.Provider value={context}>
         <div className={`bdmap ${className || ''}`} ref={this.el} style={style}>
-          {!!context.nativeInstance && children}
+          {!!context.nativeInstance && (typeof children === 'function' ? children(context.nativeInstance!) : children)}
         </div>
       </BDMapContext.Provider>
     )

@@ -4,6 +4,8 @@
 import React from 'react'
 import { BDMapContext } from './BDMap'
 import upperFirst from 'lodash/upperFirst'
+import lowerFirst from 'lodash/lowerFirst'
+import { updateSettableProperties, initializeSettableProperties } from './utils'
 
 export interface ControlProps {
   anchor?: BMap.ControlAnchor
@@ -29,26 +31,18 @@ export default abstract class Control<P> extends React.PureComponent<P & Control
     this.updateProperties(prevProps)
   }
 
-  public render() {
+  public render(): React.ReactNode {
     return null
   }
 
   protected initialProperties() {
     // initial property
-    ;[...COMMON_PROPERTIES, ...this.extendedProperties].forEach(property => {
-      const value = this.props[property]
-      if (value != null) {
-        const methodName = `set${upperFirst(property)}`
-        if (typeof this.instance[methodName] === 'function') {
-          this.instance[methodName](value)
-        }
-      }
-    })
+    initializeSettableProperties([...COMMON_PROPERTIES, ...this.extendedProperties], this.instance, this.props)
 
     // initial events
     this.extendedEvents.forEach(name => {
       const propsName = `on${name}`
-      const methodName = propsName.toLowerCase()
+      const methodName = `on${lowerFirst(name)}`
       if (typeof this.props[propsName] === 'function') {
         this.instance[methodName] = this.props[propsName]
       }
@@ -57,21 +51,13 @@ export default abstract class Control<P> extends React.PureComponent<P & Control
 
   protected updateProperties(prevProps: P & ControlProps) {
     // update properties
-    ;[...COMMON_PROPERTIES, ...this.extendedProperties].forEach(property => {
-      if (this.props[property] !== prevProps[property]) {
-        const value = this.props[property]
-        const methodName = `set${upperFirst(property)}`
-        if (typeof this.instance[methodName] === 'function') {
-          this.instance[methodName](value)
-        }
-      }
-    })
+    updateSettableProperties([...COMMON_PROPERTIES, ...this.extendedProperties], this.instance, this.props, prevProps)
 
     // update event bindings
     this.extendedEvents.forEach(name => {
       const propsName = `on${name}`
       if (this.props[propsName] !== prevProps[propsName]) {
-        const methodName = propsName.toLowerCase()
+        const methodName = `on${lowerFirst(name)}`
         this.instance[methodName] = this.props[propsName]
       }
     })

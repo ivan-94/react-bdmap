@@ -1,19 +1,17 @@
 /**
  * 表示缩略地图控件
- * TODO: 事件
- * TODO: 方法
  */
 import Control from './Control'
 
 export interface OverviewMapControlProps {
   size?: BMap.Size
   defaultOpen?: boolean
-  onViewChanged?: (event: { type: string; target: any; isOpen: boolean }) => void
-  onViewChanging?: (event: { type: string; target: any }) => void
+  onViewchanged?: (event: { type: string; target: any; isOpen: boolean }) => void
+  onViewchanging?: (event: { type: string; target: any }) => void
 }
 
 const CONTROL_PROPERTIES = ['size']
-const CONTROL_EVENTS = ['ViewChanged', 'ViewChanging']
+const CONTROL_EVENTS = ['Viewchanged', 'Viewchanging']
 
 export default class OverviewMapControl extends Control<OverviewMapControlProps> {
   public componentDidMount() {
