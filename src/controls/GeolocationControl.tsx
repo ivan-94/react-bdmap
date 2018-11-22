@@ -8,18 +8,21 @@ export interface GeolocationControlProps {
   showAddressBar?: boolean
   // 添加控件时是否进行定位。默认添加控件时不进行定位
   enableAutoLocation?: boolean
-  // TODO: icon
-  onLocationSuccess?: (evt: { point: BMap.Point }) => void
-  onLocationError?: (error: {}) => void
+  icon?: BMap.Icon
+  onLocationSuccess?: (
+    evt: { point: BMap.Point; type: 'locationSuccess'; addressComponent: BMap.AddressComponent },
+  ) => void
+  // TODO: 类型是什么
+  onLocationError?: (error: { status: number }) => void
 }
 
-const CONTROL_EVENTS = ['LocationSuccess', 'LocationError']
+const CONTROL_EVENTS = ['locationSuccess', 'locationError']
 
 export default class GeolocationControl extends Control<GeolocationControlProps> {
   public componentDidMount() {
-    const { showAddressBar, enableAutoLocation } = this.props
+    const { showAddressBar, enableAutoLocation, icon } = this.props
     this.extendedEvents = CONTROL_EVENTS
-    this.instance = new BMap.GeolocationControl({ showAddressBar, enableAutoLocation })
+    this.instance = new BMap.GeolocationControl({ showAddressBar, enableAutoLocation, locationIcon: icon })
     this.initialProperties()
     this.context.nativeInstance!.addControl(this.instance)
   }

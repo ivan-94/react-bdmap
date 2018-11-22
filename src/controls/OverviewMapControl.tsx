@@ -11,7 +11,7 @@ export interface OverviewMapControlProps {
 }
 
 const CONTROL_PROPERTIES = ['size']
-const CONTROL_EVENTS = ['Viewchanged', 'Viewchanging']
+const CONTROL_EVENTS = ['viewchanged', 'viewchanging']
 
 export default class OverviewMapControl extends Control<OverviewMapControlProps> {
   public componentDidMount() {

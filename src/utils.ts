@@ -54,6 +54,36 @@ export function initializeSettableProperties(properties: string[], instance: obj
   })
 }
 
+export function initializeEnableableProperties(properties: string[], instance: object, props: object) {
+  properties.forEach(property => {
+    const upperName = upperFirst(property)
+    const propsName = `enable${upperName}`
+    if (props[propsName] != null) {
+      const methodName = props[propsName] ? propsName : `disable${upperName}`
+      if (typeof instance[methodName] === 'function') {
+        instance[methodName]()
+      }
+    }
+  })
+}
+
+export function initializeEvents(events: string[], instance: object, props: object, context?: object) {
+  events.forEach(event => {
+    const eventName = `on${event}`
+    const propsName = `on${upperFirst(event)}`
+    const overrideMethod = `handle${upperFirst(event)}`
+    // 覆盖监听器
+    if (context && overrideMethod in context) {
+      instance[eventName] = context[overrideMethod]
+      return
+    }
+
+    if (typeof props[propsName] === 'function') {
+      instance[eventName] = props[propsName]
+    }
+  })
+}
+
 export function updateSettableProperties(properties: string[], instance: object, props: object, prevProps: object) {
   properties.forEach(property => {
     if (props[property] !== prevProps[property]) {
@@ -62,6 +92,37 @@ export function updateSettableProperties(properties: string[], instance: object,
       if (typeof instance[methodName] === 'function') {
         instance[methodName](value)
       }
+    }
+  })
+}
+
+export function updateEnableableProperties(properties: string[], instance: object, props: object, prevProps: object) {
+  properties.forEach(property => {
+    const upperName = upperFirst(property)
+    const propsName = `enable${upperName}`
+    if (props[propsName] !== prevProps[propsName]) {
+      if (props[propsName] != null) {
+        const methodName = props[propsName] ? propsName : `disable${upperName}`
+        if (typeof instance[methodName] === 'function') {
+          instance[methodName]()
+        }
+      }
+    }
+  })
+}
+
+export function updateEvents(events: string[], instance: object, props: object, prevProps: object, context?: object) {
+  events.forEach(event => {
+    const eventName = `on${event}`
+    const propsName = `on${upperFirst(event)}`
+    const overrideMethod = `handle${upperFirst(event)}`
+
+    if (context && overrideMethod in context) {
+      return
+    }
+
+    if (props[propsName] !== prevProps[propsName]) {
+      instance[eventName] = props[propsName]
     }
   })
 }

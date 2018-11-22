@@ -283,9 +283,6 @@ export default class BDMap extends React.Component<BDMapProps, State> {
       })
     }
 
-    // 初始化控件
-    // map.addControl(new BMap.GeolocationControl())
-
     // 清空等待队列
     // setTimeout(() => {
     //   const queue = BDMap.waiterQueue

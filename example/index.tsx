@@ -1,15 +1,15 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
 import BDMap from '../src/BDMap'
-import NavigationControl from '../src/NavigationControl'
-import OverviewMapControl from '../src/OverviewMapControl'
-import ScaleControl from '../src/ScaleControl'
-import MapTypeControl from '../src/MapTypeControl'
-import CopyrightControl from '../src/CopyrightControl'
-import GeolocationControl from '../src/GeolocationControl'
-import CustomControl from '../src/CustomControl'
+import NavigationControl from '../src/controls/NavigationControl'
+import OverviewMapControl from '../src/controls/OverviewMapControl'
+import ScaleControl from '../src/controls/ScaleControl'
+import MapTypeControl from '../src/controls/MapTypeControl'
+import CopyrightControl from '../src/controls/CopyrightControl'
+import GeolocationControl from '../src/controls/GeolocationControl'
+import CustomControl from '../src/controls/CustomControl'
+import Marker from '../src/overlays/Marker'
 import './style.css'
-import { Coord } from '../src/type'
 
 function log(e: any) {
   console.log(e)
@@ -17,7 +17,8 @@ function log(e: any) {
 
 class App extends React.Component {
   public state: {
-    center?: Coord
+    center?: BMap.Point
+    current?: BMap.Point
     zoom: number
     count: number
     dragging: boolean
@@ -28,10 +29,6 @@ class App extends React.Component {
     bounds?: BMap.Bounds
   } = {
     count: 0,
-    center: {
-      lat: 39.915,
-      lng: 116.404,
-    },
     dragging: true,
     zoom: 15,
     showControls: true,
@@ -76,6 +73,14 @@ class App extends React.Component {
                         console.log('view changed')
                       }}
                     />
+                    {!!this.state.current && (
+                      <Marker
+                        position={this.state.current}
+                        enableDragging
+                        onChange={this.handleCurrentChange}
+                        title="test"
+                      />
+                    )}
                   </>
                 )}
               </>
@@ -119,10 +124,14 @@ class App extends React.Component {
 
   private handleReady = (map: BMap.Map) => {
     const center = new BMap.Point(116.404, 39.915)
-    this.setState({ center })
+    this.setState({ center, current: center })
     setTimeout(() => {
       this.setState({ bounds: map.getBounds() })
     }, 1000)
+  }
+
+  private handleCurrentChange = (value: BMap.Point) => {
+    this.setState({ current: value })
   }
 
   private handleCustomControlClick = () => {

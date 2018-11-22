@@ -3,8 +3,7 @@
  */
 import React from 'react'
 import { BDMapContext } from '../BDMap'
-import lowerFirst from 'lodash/lowerFirst'
-import { updateSettableProperties, initializeSettableProperties } from '../utils'
+import { updateSettableProperties, initializeSettableProperties, initializeEvents, updateEvents } from '../utils'
 
 export interface ControlProps {
   anchor?: BMap.ControlAnchor
@@ -39,13 +38,7 @@ export default abstract class Control<P> extends React.PureComponent<P & Control
     initializeSettableProperties([...COMMON_PROPERTIES, ...this.extendedProperties], this.instance, this.props)
 
     // initial events
-    this.extendedEvents.forEach(name => {
-      const propsName = `on${name}`
-      const methodName = `on${lowerFirst(name)}`
-      if (typeof this.props[propsName] === 'function') {
-        this.instance[methodName] = this.props[propsName]
-      }
-    })
+    initializeEvents(this.extendedEvents, this.instance, this.props, this)
   }
 
   protected updateProperties(prevProps: P & ControlProps) {
@@ -53,12 +46,6 @@ export default abstract class Control<P> extends React.PureComponent<P & Control
     updateSettableProperties([...COMMON_PROPERTIES, ...this.extendedProperties], this.instance, this.props, prevProps)
 
     // update event bindings
-    this.extendedEvents.forEach(name => {
-      const propsName = `on${name}`
-      if (this.props[propsName] !== prevProps[propsName]) {
-        const methodName = `on${lowerFirst(name)}`
-        this.instance[methodName] = this.props[propsName]
-      }
-    })
+    updateEvents(this.extendedEvents, this.instance, this.props, prevProps, this)
   }
 }
