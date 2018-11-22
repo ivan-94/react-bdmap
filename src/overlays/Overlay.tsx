@@ -14,7 +14,7 @@ import {
 
 export interface OverlayProps {}
 
-export default abstract class Overlay<P> extends React.Component<OverlayProps & P> {
+export default abstract class Overlay<P> extends React.PureComponent<OverlayProps & P> {
   public static contextType = BDMapContext
   public context!: React.ContextType<typeof BDMapContext>
   protected instance: BMap.Overlay

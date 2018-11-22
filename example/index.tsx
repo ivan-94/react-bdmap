@@ -12,6 +12,7 @@ import Marker from '../src/overlays/Marker'
 import './style.css'
 import Label from '../src/overlays/Label'
 import Polyline from '../src/overlays/Polyline'
+import Polygon from '../src/overlays/Polygon'
 
 function log(e: any) {
   console.log(e)
@@ -89,6 +90,17 @@ class App extends React.Component {
                     <Polyline
                       strokeColor="red"
                       path={[new BMap.Point(116.403335, 39.916319), new BMap.Point(116.405616, 39.91563)]}
+                    />
+                    <Polygon
+                      strokeColor="blue"
+                      fillColor="yellow"
+                      fillOpacity={0.6}
+                      path={[
+                        new BMap.Point(116.403335, 39.916319),
+                        new BMap.Point(116.405616, 39.91563),
+                        new BMap.Point(116.405365, 39.913908),
+                        new BMap.Point(116.399508, 39.913915),
+                      ]}
                     />
                   </>
                 )}
