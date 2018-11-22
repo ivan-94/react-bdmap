@@ -17,6 +17,7 @@ export default abstract class Control<P> extends React.PureComponent<P & Control
   public context!: React.ContextType<typeof BDMapContext>
   protected instance: BMap.Control
   protected extendedProperties: string[] = []
+  protected extendedEvents: string[] = []
 
   public componentWillUnmount() {
     if (this.instance && this.context) {
@@ -33,6 +34,7 @@ export default abstract class Control<P> extends React.PureComponent<P & Control
   }
 
   protected initialProperties() {
+    // initial property
     ;[...COMMON_PROPERTIES, ...this.extendedProperties].forEach(property => {
       const value = this.props[property]
       if (value != null) {
@@ -42,9 +44,19 @@ export default abstract class Control<P> extends React.PureComponent<P & Control
         }
       }
     })
+
+    // initial events
+    this.extendedEvents.forEach(name => {
+      const propsName = `on${name}`
+      const methodName = propsName.toLowerCase()
+      if (typeof this.props[propsName] === 'function') {
+        this.instance[methodName] = this.props[propsName]
+      }
+    })
   }
 
   protected updateProperties(prevProps: P & ControlProps) {
+    // update properties
     ;[...COMMON_PROPERTIES, ...this.extendedProperties].forEach(property => {
       if (this.props[property] !== prevProps[property]) {
         const value = this.props[property]
@@ -52,6 +64,15 @@ export default abstract class Control<P> extends React.PureComponent<P & Control
         if (typeof this.instance[methodName] === 'function') {
           this.instance[methodName](value)
         }
+      }
+    })
+
+    // update event bindings
+    this.extendedEvents.forEach(name => {
+      const propsName = `on${name}`
+      if (this.props[propsName] !== prevProps[propsName]) {
+        const methodName = propsName.toLowerCase()
+        this.instance[methodName] = this.props[propsName]
       }
     })
   }

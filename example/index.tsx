@@ -2,6 +2,7 @@ import React from 'react'
 import ReactDOM from 'react-dom'
 import BDMap from '../src/BDMap'
 import NavigationControl from '../src/NavigationControl'
+import OverviewMapControl from '../src/OverviewMapControl'
 import './style.css'
 import { Coord } from '../src/type'
 
@@ -13,6 +14,7 @@ class App extends React.Component {
     mapStyle?: number
     clickHandler?: (evt: any) => void
     anchor?: BMap.ControlAnchor
+    showControls?: boolean
   } = {
     center: {
       lat: 39.915,
@@ -20,6 +22,7 @@ class App extends React.Component {
     },
     dragging: true,
     zoom: 15,
+    showControls: true,
   }
   public render() {
     return (
@@ -36,7 +39,17 @@ class App extends React.Component {
           mapStyle={this.state.mapStyle}
           onClick={this.state.clickHandler}
         >
-          <NavigationControl anchor={this.state.anchor} enableGeolocation />
+          {this.state.showControls && (
+            <>
+              <NavigationControl anchor={this.state.anchor} enableGeolocation />
+              <OverviewMapControl
+                defaultOpen
+                onViewChanged={() => {
+                  console.log('view changed')
+                }}
+              />
+            </>
+          )}
         </BDMap>
         <div>
           <button
@@ -67,6 +80,7 @@ class App extends React.Component {
           <button onClick={() => this.setState({ anchor: BMAP_ANCHOR_BOTTOM_LEFT })}>←</button>
           <button onClick={() => this.setState({ anchor: BMAP_ANCHOR_BOTTOM_RIGHT })}>→</button>
           <button onClick={() => this.setState({ anchor: undefined })}>default</button>
+          <button onClick={() => this.setState({ showControls: !this.state.showControls })}>toggle visible</button>
         </div>
       </div>
     )
