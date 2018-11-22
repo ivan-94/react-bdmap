@@ -2,10 +2,9 @@
  * 所有空间的父类
  */
 import React from 'react'
-import { BDMapContext } from './BDMap'
-import upperFirst from 'lodash/upperFirst'
+import { BDMapContext } from '../BDMap'
 import lowerFirst from 'lodash/lowerFirst'
-import { updateSettableProperties, initializeSettableProperties } from './utils'
+import { updateSettableProperties, initializeSettableProperties } from '../utils'
 
 export interface ControlProps {
   anchor?: BMap.ControlAnchor

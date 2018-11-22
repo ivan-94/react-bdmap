@@ -1,7 +1,7 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
-import { BDMapContext } from './BDMap'
-import { initializeSettableProperties, updateSettableProperties } from './utils'
+import { BDMapContext } from '../BDMap'
+import { initializeSettableProperties, updateSettableProperties } from '../utils'
 
 export interface CustomControlProps {
   children: React.ReactNode
