@@ -4,13 +4,10 @@
 import React from 'react'
 import upperFirst from 'lodash/upperFirst'
 import lowerFirst from 'lodash/lowerFirst'
-import { delay, importScript, isAndroid } from './utils'
+import { isAndroid } from './utils'
 import { BDMAP_PROPERTIES, BDMAP_CUSTOM_EVENT } from './constants'
 
 export interface BDMapProps {
-  // api key
-  apiKey: string
-
   className?: string
   style?: React.CSSProperties
   /**
@@ -77,11 +74,6 @@ export interface BDMapProps {
   onTouchmove?: (event: { type: string; target: any; point: BMap.Point; pixel: BMap.Pixel }) => void
   onTouchend?: (event: { type: string; target: any; point: BMap.Point; pixel: BMap.Pixel }) => void
   onLongpress?: (event: { type: string; target: any; point: BMap.Point; pixel: BMap.Pixel }) => void
-  /**
-   * event for BDMap
-   */
-  onReady?: (ref: BMap.Map) => void
-  children?: ((map: BMap.Map) => React.ReactNode)
 }
 
 export interface BDMapContextValue {
@@ -89,19 +81,10 @@ export interface BDMapContextValue {
   container?: BDMap
 }
 
-declare global {
-  interface Window {
-    loadBDMap?: () => void
-    BMap: typeof BMap
-  }
-}
-
 interface State {
   error?: Error
   context: BDMapContextValue
 }
-
-const DEFAULT_RETRY_TIME = 3
 
 export const BDMapContext = React.createContext<BDMapContextValue>({})
 
@@ -115,19 +98,12 @@ export default class BDMap extends React.Component<BDMapProps, State> {
   private el = React.createRef<HTMLDivElement>()
   private map: BMap.Map
 
-  public constructor(props: BDMapProps) {
-    super(props)
-    if (this.props.apiKey == null) {
-      throw new TypeError('BDMap: apiKey is required')
-    }
-  }
-
   public componentDidMount() {
     if (window.BMap) {
       this.initializeMap()
       return
     }
-    this.loadMap()
+    throw new TypeError('BDMap should be used under BDMapLoader')
   }
 
   public componentDidUpdate(prevProps: BDMapProps, prevState: State) {
@@ -191,34 +167,17 @@ export default class BDMap extends React.Component<BDMapProps, State> {
   public render() {
     const { children, className, style } = this.props
     const { context } = this.state
-    // TODO: error display
     return (
       <BDMapContext.Provider value={context}>
         <div className={`bdmap ${className || ''}`} ref={this.el} style={style}>
-          {!!context.nativeInstance && (typeof children === 'function' ? children(context.nativeInstance!) : children)}
+          {!!context.nativeInstance && children}
         </div>
       </BDMapContext.Provider>
     )
   }
 
-  /**
-   * load bdmap in script tag
-   */
-  private async loadMap() {
-    const src = `//api.map.baidu.com/api?v=3.0&ak=${this.props.apiKey}&callback=loadBDMap`
-    window.loadBDMap = this.initializeMap
-    for (let i = 0; i < DEFAULT_RETRY_TIME; i++) {
-      try {
-        await importScript(src)
-        break
-      } catch (error) {
-        if (i === DEFAULT_RETRY_TIME - 1) {
-          // 加载失败提示
-          this.setState({ error: new Error(`Failed to load BDMap: ${error.message}`) })
-        }
-        await delay(i * 1000)
-      }
-    }
+  public getInstance(): BMap.Map | undefined {
+    return this.map
   }
 
   /**
@@ -291,18 +250,11 @@ export default class BDMap extends React.Component<BDMapProps, State> {
     // }, 100)
 
     this.map = map
-    this.setState(
-      {
-        context: {
-          nativeInstance: map,
-          container: this,
-        },
+    this.setState({
+      context: {
+        nativeInstance: map,
+        container: this,
       },
-      () => {
-        if (this.props.onReady) {
-          this.props.onReady(map)
-        }
-      },
-    )
+    })
   }
 }
