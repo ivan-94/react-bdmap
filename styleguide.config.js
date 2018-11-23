@@ -48,6 +48,7 @@ module.exports = {
     const relative = path.relative(srcDir, cppath)
     return path.join(baseDir, relative).replace(/\.tsx?$/, '.md')
   },
+  require: [path.resolve(__dirname, 'docs/helpers/setup.tsx')],
   // Typescript支持
   resolver: require('react-docgen').resolver.findAllComponentDefinitions,
   propsParser: require('react-docgen-typescript').withCustomConfig('./tsconfig.json', []).parse,
