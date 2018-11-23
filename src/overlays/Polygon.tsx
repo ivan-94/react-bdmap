@@ -28,9 +28,26 @@ export interface PolygonProps {
   onLineupdate: (event: { type: string; target: any }) => void
 }
 
-const PROPERTIES = ['path', 'strokeColor', 'fillColor', 'fillOpacity', 'strokeOpacity', 'strokeWeight', 'strokeStyle']
+const PROPERTIES = [
+  'path',
+  'strokeColor',
+  'fillColor',
+  'fillOpacity',
+  'strokeOpacity',
+  'strokeWeight',
+  'strokeStyle',
+]
 const ENABLEABLE_PROPERTIES = ['editing', 'massClear']
-const EVENTS = ['click', 'dblclick', 'mousedown', 'mouseup', 'mouseout', 'mouseover', 'remove', 'lineupdate']
+const EVENTS = [
+  'click',
+  'dblclick',
+  'mousedown',
+  'mouseup',
+  'mouseout',
+  'mouseover',
+  'remove',
+  'lineupdate',
+]
 
 export default class Polygon extends Overlay<PolygonProps> {
   public static defaultProps: Partial<PolygonProps> = {
@@ -46,5 +63,9 @@ export default class Polygon extends Overlay<PolygonProps> {
     const { path = [], enableClicking } = this.props
 
     this.instance = new BMap.Polygon(path, { enableClicking })
+  }
+
+  protected getPosition() {
+    return this.props.path && this.props.path[0]
   }
 }

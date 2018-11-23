@@ -25,6 +25,7 @@ export default abstract class Overlay<P> extends React.PureComponent<OverlayProp
   protected extendedEnableableProperties: string[] = []
   protected extendedEvents: string[] = []
   protected initialize?: () => void
+  protected customRender?: () => React.ReactNode
 
   public componentDidMount() {
     if (this.initialize) {
@@ -48,8 +49,22 @@ export default abstract class Overlay<P> extends React.PureComponent<OverlayProp
   }
 
   public render(): React.ReactNode {
-    return null
+    return (
+      <>
+        {!!this.customRender && this.customRender()}
+        {React.Children.map(this.props.children, child =>
+          React.isValidElement(child)
+            ? React.cloneElement(child as React.ReactElement<{ position?: BMap.Point }>, {
+                position: this.getPosition(),
+              })
+            : child,
+        )}
+      </>
+    )
   }
+
+  // 获取当前位置
+  protected abstract getPosition(): BMap.Point | undefined
 
   protected initialProperties() {
     // initial property
@@ -63,7 +78,12 @@ export default abstract class Overlay<P> extends React.PureComponent<OverlayProp
   protected updateProperties(prevProps: P & OverlayProps) {
     // update properties
     updateSettableProperties(this.extendedProperties, this.instance, this.props, prevProps)
-    updateEnableableProperties(this.extendedEnableableProperties, this.instance, this.props, prevProps)
+    updateEnableableProperties(
+      this.extendedEnableableProperties,
+      this.instance,
+      this.props,
+      prevProps,
+    )
 
     // update Events
     updateEvents(this.extendedEvents, this.instance, this.props, prevProps, this)

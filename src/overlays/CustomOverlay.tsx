@@ -89,7 +89,11 @@ export default class CustomOverlay extends Overlay<CustomOverlayProps> {
     this.instance = new CustomOverlay.CustomOverlayInner(position, this.elm, pane)
   }
 
-  public render() {
+  protected customRender = () => {
     return ReactDOM.createPortal(this.props.children, this.elm)
+  }
+
+  protected getPosition() {
+    return this.props.position
   }
 }

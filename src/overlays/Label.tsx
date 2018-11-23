@@ -26,7 +26,16 @@ export interface LabelProps {
 
 const PROPERTIES = ['position', 'style', 'content', 'offset', 'title', 'zIndex']
 const ENABLEABLE_PROPERTIES = ['massClear']
-const EVENTS = ['click', 'dblclick', 'mousedown', 'mouseup', 'mouseout', 'mouseover', 'remove', 'rightclick']
+const EVENTS = [
+  'click',
+  'dblclick',
+  'mousedown',
+  'mouseup',
+  'mouseout',
+  'mouseover',
+  'remove',
+  'rightclick',
+]
 
 export default class Label extends Overlay<LabelProps> {
   public static defaultProps: Partial<LabelProps> = {
@@ -43,5 +52,9 @@ export default class Label extends Overlay<LabelProps> {
     this.instance = new BMap.Label(content, {
       position,
     })
+  }
+
+  protected getPosition() {
+    return this.props.position
   }
 }

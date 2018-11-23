@@ -122,7 +122,12 @@ export default class InfoWindow extends React.PureComponent<InfoWindowProps> {
   protected updateProperties(prevProps: InfoWindowProps) {
     // update properties
     updateSettableProperties(this.extendedProperties, this.instance, this.props, prevProps)
-    updateEnableableProperties(this.extendedEnableableProperties, this.instance, this.props, prevProps)
+    updateEnableableProperties(
+      this.extendedEnableableProperties,
+      this.instance,
+      this.props,
+      prevProps,
+    )
 
     // update Events
     updateEvents(this.extendedEvents, this.instance, this.props, prevProps, this)
@@ -141,6 +146,16 @@ export default class InfoWindow extends React.PureComponent<InfoWindowProps> {
   protected handleClose = (evt: any) => {
     if (this.props.onClose) {
       this.props.onClose(evt)
+    }
+
+    if (this.props.onChange) {
+      this.props.onChange(false)
+    }
+  }
+
+  protected handleClickclose = (evt: any) => {
+    if (this.props.onClickclose) {
+      this.props.onClickclose(evt)
     }
 
     if (this.props.onChange) {

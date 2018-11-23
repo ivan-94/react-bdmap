@@ -39,7 +39,16 @@ const PROPERTIES = [
   'strokeStyle',
 ]
 const ENABLEABLE_PROPERTIES = ['editing', 'massClear']
-const EVENTS = ['click', 'dblclick', 'mousedown', 'mouseup', 'mouseout', 'mouseover', 'remove', 'lineupdate']
+const EVENTS = [
+  'click',
+  'dblclick',
+  'mousedown',
+  'mouseup',
+  'mouseout',
+  'mouseover',
+  'remove',
+  'lineupdate',
+]
 
 export default class Circle extends Overlay<CircleProps> {
   public static defaultProps: Partial<CircleProps> = {
@@ -55,5 +64,9 @@ export default class Circle extends Overlay<CircleProps> {
     const { center, radius, enableClicking } = this.props
 
     this.instance = new BMap.Circle(center, radius, { enableClicking })
+  }
+
+  protected getPosition() {
+    return this.props.center
   }
 }

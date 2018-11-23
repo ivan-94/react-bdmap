@@ -28,7 +28,16 @@ export interface PolylineProps {
 
 const PROPERTIES = ['path', 'strokeColor', 'strokeOpacity', 'strokeWeight', 'strokeStyle']
 const ENABLEABLE_PROPERTIES = ['editing', 'massClear']
-const EVENTS = ['click', 'dblclick', 'mousedown', 'mouseup', 'mouseout', 'mouseover', 'remove', 'lineupdate']
+const EVENTS = [
+  'click',
+  'dblclick',
+  'mousedown',
+  'mouseup',
+  'mouseout',
+  'mouseover',
+  'remove',
+  'lineupdate',
+]
 
 export default class Polyline extends Overlay<PolylineProps> {
   public static defaultProps: Partial<PolylineProps> = {
@@ -44,5 +53,9 @@ export default class Polyline extends Overlay<PolylineProps> {
     const { path = [], enableClicking } = this.props
 
     this.instance = new BMap.Polyline(path, { enableClicking })
+  }
+
+  protected getPosition() {
+    return this.props.path && this.props.path[0]
   }
 }

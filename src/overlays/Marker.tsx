@@ -42,7 +42,18 @@ export interface MarkerProps {
   onRightclick: (event: { type: string; target: any }) => void
 }
 
-const PROPERTIES = ['position', 'icon', 'shadow', 'offset', 'title', 'top', 'label', 'zIndex', 'animation', 'rotation']
+const PROPERTIES = [
+  'position',
+  'icon',
+  'shadow',
+  'offset',
+  'title',
+  'top',
+  'label',
+  'zIndex',
+  'animation',
+  'rotation',
+]
 const ENABLEABLE_PROPERTIES = ['dragging', 'massClear']
 const EVENTS = [
   'click',
@@ -89,5 +100,9 @@ export default class Marker extends Overlay<MarkerProps> {
     if (this.props.onChange) {
       this.props.onChange(newPosition)
     }
+  }
+
+  protected getPosition() {
+    return this.props.position
   }
 }
