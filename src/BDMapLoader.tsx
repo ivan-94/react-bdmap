@@ -12,9 +12,13 @@ declare global {
 }
 
 export interface BDMapLoaderProps {
-  // api key
+  /**
+   * 你注册的API_KEY
+   */
   apiKey: string
-  // loading or load failed
+  /**
+   * 用于展示加载中或错误状态
+   */
   fallback?: (error?: Error) => React.ReactNode
 }
 
@@ -25,6 +29,9 @@ interface State {
 
 const DEFAULT_RETRY_TIME = 3
 
+/**
+ * BDMapLoader 用于加载百度地图依赖
+ */
 export default class BDMapLoader extends React.Component<BDMapLoaderProps> {
   public state: State = {
     loaded: !!window.BMap,

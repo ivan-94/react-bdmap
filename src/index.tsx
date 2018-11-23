@@ -1,1 +1,2 @@
-console.log('he')
+export { default as BDMapLoader } from './BDMapLoader'
+export { default as BDMap } from './BDMap'
