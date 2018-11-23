@@ -1,5 +1,6 @@
 /**
  * 初始化和加载baidu地图
+ * TODO: 一个应用可能会有多个实例
  */
 import React from 'react'
 import { delay, importScript } from './utils'

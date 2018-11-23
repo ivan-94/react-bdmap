@@ -3,7 +3,7 @@
  */
 import React from 'react'
 import ReactDOM from 'react-dom'
-import Overlay from './Overlay'
+import Overlay, { PaneType } from './Overlay'
 
 export interface CustomOverlayProps {
   position: BMap.Point
@@ -12,15 +12,6 @@ export interface CustomOverlayProps {
   children: React.ReactNode
   pane?: PaneType
 }
-
-export type PaneType =
-  | 'markerPane'
-  | 'floatPane'
-  | 'markerMouseTarget'
-  | 'floatShadow'
-  | 'labelPane'
-  | 'markerShadow'
-  | 'mapPane'
 
 // 惰性生成
 export function getClass() {

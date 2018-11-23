@@ -12,6 +12,15 @@ import {
   updateEvents,
 } from '../utils'
 
+export type PaneType =
+  | 'markerPane'
+  | 'floatPane'
+  | 'markerMouseTarget'
+  | 'floatShadow'
+  | 'labelPane'
+  | 'markerShadow'
+  | 'mapPane'
+
 export interface OverlayProps {}
 
 export default abstract class Overlay<P> extends React.PureComponent<OverlayProps & P> {

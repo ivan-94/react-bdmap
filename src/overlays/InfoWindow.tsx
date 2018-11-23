@@ -103,7 +103,8 @@ export default class InfoWindow extends React.PureComponent<InfoWindowProps> {
   }
 
   public componentWillUnmount() {
-    // TODO:
+    // TODO: 目前baidu文档上没有看到任何关于销毁InfoWindow的方法
+    this.setVisible(false)
   }
 
   public render() {
