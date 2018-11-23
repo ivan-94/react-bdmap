@@ -23,6 +23,16 @@ module.exports = {
       components: 'src/overlays/[A-Z]*.tsx',
       sectionDepth: 1,
     },
+    {
+      name: '其他',
+      sections: [
+        {
+          name: 'withMap',
+          content: 'docs/withMap.md',
+        },
+      ],
+      sectionDepth: 1,
+    },
   ],
   // 每一节一页, 避免加载多个地图实例
   pagePerSection: true,
