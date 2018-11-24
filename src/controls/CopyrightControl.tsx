@@ -12,7 +12,11 @@ export interface CopyrightControlProps {
 export interface CopyrightProps {
   // 会渲染成字符串，所以事件在这里无效
   children: React.ReactNode
-  bounds: BMap.Bounds
+  bounds?: BMap.Bounds
+  /**
+   * @ignore 由CopyrightControl注入
+   */
+  control?: BMap.CopyrightControl
 }
 
 let uid: number = 0
@@ -20,10 +24,8 @@ export default class CopyrightControl extends Control<CopyrightControlProps> {
   /**
    * 渲染Copyright内容
    */
-  public static Copyright = class Copyright extends React.PureComponent<
-    CopyrightProps & {
-      control?: BMap.CopyrightControl
-    }
+  public static Item = class Copyright extends React.PureComponent<
+    CopyrightProps
   > {
     private innerEl: HTMLDivElement = document.createElement('div')
     private id: number = uid++
@@ -60,9 +62,13 @@ export default class CopyrightControl extends Control<CopyrightControlProps> {
     }
   }
 
+  public constructor(props: CopyrightControlProps) {
+    super(props)
+    this.instance = new BMap.CopyrightControl()
+  }
+
   public componentDidMount() {
     if (this.context) {
-      this.instance = new BMap.CopyrightControl()
       this.initialProperties()
       this.context.nativeInstance!.addControl(this.instance)
     }

@@ -9,22 +9,31 @@ module.exports = {
       content: 'README.md',
     },
     {
-      name: 'Container',
+      name: '容器(Container)',
       components: ['src/BDMapLoader.tsx', 'src/BDMap.tsx'],
       sectionDepth: 1,
     },
     {
-      name: 'Controls',
+      name: '控件(Controls)',
       components: 'src/controls/[A-Z]*.tsx',
       sectionDepth: 1,
     },
     {
-      name: 'Overlays',
+      name: '覆盖物(Overlays)',
       components: 'src/overlays/[A-Z]*.tsx',
       sectionDepth: 1,
     },
     {
-      name: '其他',
+      name: '地图图层(TileLayer)',
+      components: [
+        'src/tileLayers/TileLayer.tsx',
+        'src/tileLayers/TrafficLayer.tsx',
+        'src/tileLayers/CustomTileLayer.tsx',
+      ],
+      sectionDepth: 0,
+    },
+    {
+      name: '其他(Other)',
       sections: [
         {
           name: 'withMap',
@@ -62,7 +71,10 @@ module.exports = {
   require: [path.resolve(__dirname, 'docs/helpers/setup.tsx')],
   // Typescript支持
   resolver: require('react-docgen').resolver.findAllComponentDefinitions,
-  propsParser: require('react-docgen-typescript').withCustomConfig('./tsconfig.json', []).parse,
+  propsParser: require('react-docgen-typescript').withCustomConfig(
+    './tsconfig.json',
+    [],
+  ).parse,
   webpackConfig: {
     resolve: {
       // Add `.ts` and `.tsx` as a resolvable extension.
