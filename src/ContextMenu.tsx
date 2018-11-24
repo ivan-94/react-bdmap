@@ -4,10 +4,13 @@
 import React from 'react'
 import { BDMapContext } from './BDMap'
 import { MESSAGE_CONTEXT_MISSING } from './constants'
+import { initializeEvents, updateEvents } from './utils'
 
 export interface ContextMenuProps {
   /** @ignore 作为Marker的下级节点 */
   overlay?: BMap.Marker
+  onOpen: (event: { type: string; target: any; point: BMap.Point; pixel: BMap.Pixel }) => void
+  onClose: (event: { type: string; target: any; point: BMap.Point; pixel: BMap.Pixel }) => void
 }
 
 export interface ContextMenuItemProps {
@@ -102,6 +105,7 @@ export default class ContextMenu extends React.Component<ContextMenuProps> {
   private instance: BMap.ContextMenu
   private seps: object[] = []
   private container: BMap.Map | BMap.Marker
+  private events = ['open', 'close']
 
   public constructor(props: ContextMenuProps) {
     super(props)
@@ -124,6 +128,12 @@ export default class ContextMenu extends React.Component<ContextMenuProps> {
     if (container) {
       container.addContextMenu(this.instance)
     }
+
+    initializeEvents(this.events, this.instance, this.props)
+  }
+
+  public componentDidUpdate(prevProps: ContextMenuProps) {
+    updateEvents(this.events, this.instance, this.props, prevProps)
   }
 
   public componentWillUnmount() {

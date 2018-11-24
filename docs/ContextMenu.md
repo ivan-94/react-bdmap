@@ -20,7 +20,7 @@ class Example extends React.Component {
     return (
       <>
         <BDMap ref={this.map} center={this.state.center} style={{ height: 450 }} zoom={15}>
-          <ContextMenu>
+          <ContextMenu onOpen={logger('onOpen')} onClose={logger('onClose')}>
             <ContextMenu.Item onClick={this.handleZoom}>放大</ContextMenu.Item>
             <ContextMenu.Separator />
             <ContextMenu.Item disabled>缩小</ContextMenu.Item>
