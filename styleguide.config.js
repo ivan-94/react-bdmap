@@ -29,6 +29,7 @@ module.exports = {
         'src/tileLayers/TileLayer.tsx',
         'src/tileLayers/TrafficLayer.tsx',
         'src/tileLayers/CustomTileLayer.tsx',
+        'src/tileLayers/CustomLayer.tsx',
       ],
       sectionDepth: 0,
     },
