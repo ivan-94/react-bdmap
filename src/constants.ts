@@ -29,3 +29,5 @@ export const BDMAP_PROPERTIES = [
 ]
 
 export const BDMAP_CUSTOM_EVENT = ['ready']
+
+export const MESSAGE_CONTEXT_MISSING = `should be used under BMap`

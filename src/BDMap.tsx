@@ -35,17 +35,43 @@ export interface BDMapProps {
   /**
    * events from Native Map
    */
-  onClick?: (event: { type: string; target: any; point: BMap.Point; pixel: BMap.Pixel; overlay: BMap.Overlay }) => void
+  onClick?: (
+    event: {
+      type: string
+      target: any
+      point: BMap.Point
+      pixel: BMap.Pixel
+      overlay: BMap.Overlay
+    },
+  ) => void
   onDblclick?: (event: { type: string; target: any; point: BMap.Point; pixel: BMap.Pixel }) => void
   onRightclick?: (
-    event: { type: string; target: any; point: BMap.Point; pixel: BMap.Pixel; overlay: BMap.Overlay },
+    event: {
+      type: string
+      target: any
+      point: BMap.Point
+      pixel: BMap.Pixel
+      overlay: BMap.Overlay
+    },
   ) => void
   onRightdblclick?: (
-    event: { type: string; target: any; point: BMap.Point; pixel: BMap.Pixel; overlay: BMap.Overlay },
+    event: {
+      type: string
+      target: any
+      point: BMap.Point
+      pixel: BMap.Pixel
+      overlay: BMap.Overlay
+    },
   ) => void
   onMaptypechange?: (event: { type: string; target: any }) => void
   onMousemove?: (
-    event: { type: string; target: any; point: BMap.Point; pixel: BMap.Pixel; overlay: BMap.Overlay },
+    event: {
+      type: string
+      target: any
+      point: BMap.Point
+      pixel: BMap.Pixel
+      overlay: BMap.Overlay
+    },
   ) => void
   onMouseover?: (event: { type: string; target: any }) => void
   onMouseout?: (event: { type: string; target: any }) => void
@@ -64,13 +90,17 @@ export interface BDMapProps {
   onDragend?: (event: { type: string; target: any; point: BMap.Point; pixel: BMap.Pixel }) => void
   onAddtilelayer?: (event: { type: string; target: any }) => void
   onRemovetilelayer?: (event: { type: string; target: any }) => void
-  onLoad?: (event: { type: string; target: any; point: BMap.Point; pixel: BMap.Pixel; zoom: number }) => void
+  onLoad?: (
+    event: { type: string; target: any; point: BMap.Point; pixel: BMap.Pixel; zoom: number },
+  ) => void
   onResize?: (event: { type: string; target: any; size: BMap.Size }) => void
   onHotspotclick?: (event: { type: string; target: any; spots: BMap.HotspotOptions }) => void
   onHotspotover?: (event: { type: string; target: any; spots: BMap.HotspotOptions }) => void
   onHotspotout?: (event: { type: string; target: any; spots: BMap.HotspotOptions }) => void
   onTilesloaded?: (event: { type: string; target: any }) => void
-  onTouchstart?: (event: { type: string; target: any; point: BMap.Point; pixel: BMap.Pixel }) => void
+  onTouchstart?: (
+    event: { type: string; target: any; point: BMap.Point; pixel: BMap.Pixel },
+  ) => void
   onTouchmove?: (event: { type: string; target: any; point: BMap.Point; pixel: BMap.Pixel }) => void
   onTouchend?: (event: { type: string; target: any; point: BMap.Point; pixel: BMap.Pixel }) => void
   onLongpress?: (event: { type: string; target: any; point: BMap.Point; pixel: BMap.Pixel }) => void
@@ -176,7 +206,19 @@ export default class BDMap extends React.Component<BDMapProps, State> {
     )
   }
 
+  /**
+   * 获取地图实例
+   * @alias getMap
+   */
   public getInstance(): BMap.Map | undefined {
+    return this.map
+  }
+
+  /**
+   * 获取地图实例
+   * @alias getInstance
+   */
+  public getMap(): BMap.Map | undefined {
     return this.map
   }
 

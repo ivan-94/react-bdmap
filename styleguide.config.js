@@ -31,6 +31,7 @@ module.exports = {
           content: 'docs/withMap.md',
         },
       ],
+      components: ['src/ContextMenu.tsx'],
       sectionDepth: 1,
     },
   ],

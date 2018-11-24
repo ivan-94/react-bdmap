@@ -23,6 +23,11 @@ export type PaneType =
 
 export interface OverlayProps {}
 
+export interface ChildrenInjectedProps {
+  position?: BMap.Point
+  overlay?: BMap.Overlay
+}
+
 export default abstract class Overlay<P> extends React.PureComponent<OverlayProps & P> {
   public static contextType = BDMapContext
   public context!: React.ContextType<typeof BDMapContext>
@@ -61,13 +66,15 @@ export default abstract class Overlay<P> extends React.PureComponent<OverlayProp
     return (
       <>
         {!!this.customRender && this.customRender()}
-        {React.Children.map(this.props.children, child =>
-          React.isValidElement(child)
-            ? React.cloneElement(child as React.ReactElement<{ position?: BMap.Point }>, {
-                position: this.getPosition(),
-              })
-            : child,
-        )}
+        {!!this.instance &&
+          React.Children.map(this.props.children, child =>
+            React.isValidElement(child)
+              ? React.cloneElement(child as React.ReactElement<ChildrenInjectedProps>, {
+                  position: this.getPosition(),
+                  overlay: this.instance,
+                })
+              : child,
+          )}
       </>
     )
   }

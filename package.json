@@ -18,7 +18,9 @@
     "postbuild:es6": "cpx \"src/**/!(example)/*.+(css|jpg|jpeg|gif|png)\" ./lib",
     "postbuild:es6module": "cpx \"src/**/!(example)/*.+(css|jpg|jpeg|gif|png)\" ./es",
     "build:es6module": "tsc -d --outDir ./es",
-    "build": "npm run build:es6 && npm run build:es6module"
+    "build": "npm run build:es6 && npm run build:es6module",
+    "build:doc": "styleguidist build",
+    "start:doc": "styleguidist server"
   },
   "files": [
     "lib",
