@@ -14,7 +14,7 @@ export default class MapTypeControl extends Control<MapTypeControlProps> {
   public componentDidMount() {
     const { type, mapTypes } = this.props
     this.instance = new BMap.MapTypeControl({ type, mapTypes })
-    this.initialProperties()
     this.context.nativeInstance!.addControl(this.instance)
+    this.initialProperties()
   }
 }

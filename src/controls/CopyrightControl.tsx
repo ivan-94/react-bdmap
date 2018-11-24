@@ -69,8 +69,8 @@ export default class CopyrightControl extends Control<CopyrightControlProps> {
 
   public componentDidMount() {
     if (this.context) {
-      this.initialProperties()
       this.context.nativeInstance!.addControl(this.instance)
+      this.initialProperties()
     }
   }
 

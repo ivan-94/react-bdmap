@@ -70,7 +70,14 @@ export default class InfoWindow extends React.PureComponent<InfoWindowProps> {
   protected extendedEvents: string[] = []
 
   public componentDidMount() {
-    const { maxWidth, offset, message, enableMessage, position, open } = this.props
+    const {
+      maxWidth,
+      offset,
+      message,
+      enableMessage,
+      position,
+      open,
+    } = this.props
     if (position == null) {
       throw new TypeError('InfoWindow: position is required')
     }
@@ -86,9 +93,8 @@ export default class InfoWindow extends React.PureComponent<InfoWindowProps> {
       enableMessage,
     })
 
-    this.initialProperties()
-
     this.setVisible(open)
+    this.initialProperties()
   }
 
   public componentDidUpdate(prevProps: InfoWindowProps) {
@@ -113,8 +119,16 @@ export default class InfoWindow extends React.PureComponent<InfoWindowProps> {
 
   protected initialProperties() {
     // initial property
-    initializeSettableProperties(this.extendedProperties, this.instance, this.props)
-    initializeEnableableProperties(this.extendedEnableableProperties, this.instance, this.props)
+    initializeSettableProperties(
+      this.extendedProperties,
+      this.instance,
+      this.props,
+    )
+    initializeEnableableProperties(
+      this.extendedEnableableProperties,
+      this.instance,
+      this.props,
+    )
 
     // initial events
     initializeEvents(this.extendedEvents, this.instance, this.props, this)
@@ -122,7 +136,12 @@ export default class InfoWindow extends React.PureComponent<InfoWindowProps> {
 
   protected updateProperties(prevProps: InfoWindowProps) {
     // update properties
-    updateSettableProperties(this.extendedProperties, this.instance, this.props, prevProps)
+    updateSettableProperties(
+      this.extendedProperties,
+      this.instance,
+      this.props,
+      prevProps,
+    )
     updateEnableableProperties(
       this.extendedEnableableProperties,
       this.instance,
@@ -131,7 +150,13 @@ export default class InfoWindow extends React.PureComponent<InfoWindowProps> {
     )
 
     // update Events
-    updateEvents(this.extendedEvents, this.instance, this.props, prevProps, this)
+    updateEvents(
+      this.extendedEvents,
+      this.instance,
+      this.props,
+      prevProps,
+      this,
+    )
   }
 
   protected handleOpen = (evt: any) => {

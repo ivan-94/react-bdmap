@@ -10,7 +10,11 @@ export interface GeolocationControlProps {
   enableAutoLocation?: boolean
   icon?: BMap.Icon
   onLocationSuccess?: (
-    evt: { point: BMap.Point; type: 'locationSuccess'; addressComponent: BMap.AddressComponent },
+    evt: {
+      point: BMap.Point
+      type: 'locationSuccess'
+      addressComponent: BMap.AddressComponent
+    },
   ) => void
   // TODO: 类型是什么
   onLocationError?: (error: { status: number }) => void
@@ -18,12 +22,18 @@ export interface GeolocationControlProps {
 
 const CONTROL_EVENTS = ['locationSuccess', 'locationError']
 
-export default class GeolocationControl extends Control<GeolocationControlProps> {
+export default class GeolocationControl extends Control<
+  GeolocationControlProps
+> {
   public componentDidMount() {
     const { showAddressBar, enableAutoLocation, icon } = this.props
     this.extendedEvents = CONTROL_EVENTS
-    this.instance = new BMap.GeolocationControl({ showAddressBar, enableAutoLocation, locationIcon: icon })
-    this.initialProperties()
+    this.instance = new BMap.GeolocationControl({
+      showAddressBar,
+      enableAutoLocation,
+      locationIcon: icon,
+    })
     this.context.nativeInstance!.addControl(this.instance)
+    this.initialProperties()
   }
 }

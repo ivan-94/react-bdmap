@@ -13,7 +13,7 @@ export default class ScaleControl extends Control<ScaleControlProps> {
   public componentDidMount() {
     this.extendedProperties = CONTROL_PROPERTIES
     this.instance = new BMap.ScaleControl()
-    this.initialProperties()
     this.context.nativeInstance!.addControl(this.instance)
+    this.initialProperties()
   }
 }

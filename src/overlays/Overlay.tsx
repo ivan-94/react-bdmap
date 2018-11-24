@@ -28,7 +28,9 @@ export interface ChildrenInjectedProps {
   overlay?: BMap.Overlay
 }
 
-export default abstract class Overlay<P> extends React.PureComponent<OverlayProps & P> {
+export default abstract class Overlay<P> extends React.PureComponent<
+  OverlayProps & P
+> {
   public static contextType = BDMapContext
   public context!: React.ContextType<typeof BDMapContext>
   protected instance: BMap.Overlay
@@ -47,8 +49,9 @@ export default abstract class Overlay<P> extends React.PureComponent<OverlayProp
     }
 
     if (this.instance && this.context) {
-      this.initialProperties()
       this.context.nativeInstance!.addOverlay(this.instance)
+      // 添加到地图后才能正式进行DOM操作
+      this.initialProperties()
     }
   }
 
@@ -69,10 +72,13 @@ export default abstract class Overlay<P> extends React.PureComponent<OverlayProp
         {!!this.instance &&
           React.Children.map(this.props.children, child =>
             React.isValidElement(child)
-              ? React.cloneElement(child as React.ReactElement<ChildrenInjectedProps>, {
-                  position: this.getPosition(),
-                  overlay: this.instance,
-                })
+              ? React.cloneElement(
+                  child as React.ReactElement<ChildrenInjectedProps>,
+                  {
+                    position: this.getPosition(),
+                    overlay: this.instance,
+                  },
+                )
               : child,
           )}
       </>
@@ -84,8 +90,16 @@ export default abstract class Overlay<P> extends React.PureComponent<OverlayProp
 
   protected initialProperties() {
     // initial property
-    initializeSettableProperties(this.extendedProperties, this.instance, this.props)
-    initializeEnableableProperties(this.extendedEnableableProperties, this.instance, this.props)
+    initializeSettableProperties(
+      this.extendedProperties,
+      this.instance,
+      this.props,
+    )
+    initializeEnableableProperties(
+      this.extendedEnableableProperties,
+      this.instance,
+      this.props,
+    )
 
     // initial events
     initializeEvents(this.extendedEvents, this.instance, this.props, this)
@@ -93,7 +107,12 @@ export default abstract class Overlay<P> extends React.PureComponent<OverlayProp
 
   protected updateProperties(prevProps: P & OverlayProps) {
     // update properties
-    updateSettableProperties(this.extendedProperties, this.instance, this.props, prevProps)
+    updateSettableProperties(
+      this.extendedProperties,
+      this.instance,
+      this.props,
+      prevProps,
+    )
     updateEnableableProperties(
       this.extendedEnableableProperties,
       this.instance,
@@ -102,6 +121,12 @@ export default abstract class Overlay<P> extends React.PureComponent<OverlayProp
     )
 
     // update Events
-    updateEvents(this.extendedEvents, this.instance, this.props, prevProps, this)
+    updateEvents(
+      this.extendedEvents,
+      this.instance,
+      this.props,
+      prevProps,
+      this,
+    )
   }
 }

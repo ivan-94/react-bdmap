@@ -15,8 +15,11 @@ export default class NavigationControl extends Control<NavigationControlProps> {
   public componentDidMount() {
     this.extendedProperties = NAVIGATION_CONTROL_PROPERTIES
     const { showZoomInfo, enableGeolocation } = this.props
-    this.instance = new BMap.NavigationControl({ showZoomInfo, enableGeolocation })
-    this.initialProperties()
+    this.instance = new BMap.NavigationControl({
+      showZoomInfo,
+      enableGeolocation,
+    })
     this.context.nativeInstance!.addControl(this.instance)
+    this.initialProperties()
   }
 }
