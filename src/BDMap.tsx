@@ -1,10 +1,21 @@
 import React from 'react'
-import upperFirst from 'lodash/upperFirst'
-import { isAndroid, initializeEvents, updateEvents } from './utils'
+import debounce from 'lodash/debounce'
+import {
+  isAndroid,
+  initializeEvents,
+  initializeSettableProperties,
+  initializeEnableableProperties,
+  updateEvents,
+  override,
+  updateEnableableProperties,
+  updateSettableProperties,
+} from './utils'
 
 export interface BDMapProps {
   className?: string
   style?: React.CSSProperties
+  /** onCenterChange debounce 延迟时间 */
+  centerChangeDelay?: number
 
   /**
    * enableable properties
@@ -49,8 +60,10 @@ export interface BDMapProps {
   /**
    * controlled properties
    */
+  /** 设置地图的缩放级别 */
   zoom?: number
-  center?: BMap.Point
+  /** 设置地图中心点, 必须设置一个初始中心点, 否则百度地图无法正常初始化 */
+  center: BMap.Point
 
   /**
    * events from Native Map
@@ -129,6 +142,14 @@ export interface BDMapProps {
   onTouchmove?: (event: { type: string; target: any; point: BMap.Point; pixel: BMap.Pixel }) => void
   onTouchend?: (event: { type: string; target: any; point: BMap.Point; pixel: BMap.Pixel }) => void
   onLongpress?: (event: { type: string; target: any; point: BMap.Point; pixel: BMap.Pixel }) => void
+
+  /**
+   * Custom events
+   */
+  /** 缩放级别变动. 和zoom配合实现受控模式  */
+  onZoomChange?: (zoom: number) => void
+  /** 中心点变动. 和center配合实现受控模式. 可以使用centerChangeDelay设置debounce延迟  */
+  onCenterChange?: (center: BMap.Point) => void
 }
 
 export interface BDMapContextValue {
@@ -141,39 +162,28 @@ interface State {
   context: BDMapContextValue
 }
 
-/**
- * 百度地图支持的属性
- */
-const BDMAP_PROPERTIES = [
-  { name: 'dragging', type: 'enableable', defaultValue: true },
-  { name: 'scrollWheelZoom', type: 'enableable', defaultValue: false },
-  { name: 'doubleClickZoom', type: 'enableable', defaultValue: true },
-  { name: 'keyboard', type: 'enableable', defaultValue: false },
-  { name: 'inertialDragging', type: 'enableable', defaultValue: false },
-  { name: 'continuousZoom', type: 'enableable', defaultValue: false },
-  { name: 'pinchToZoom', type: 'enableable', defaultValue: true },
-  { name: 'autoResize', type: 'enableable', defaultValue: true },
-  // settable
-  { name: 'defaultCursor', type: 'settable', default: 'default' },
-  { name: 'draggingCursor', type: 'settable', default: 'grabbing' },
-  { name: 'minZoom', type: 'settable', defaultValue: 3 },
-  { name: 'maxZoom', type: 'settable', defaultValue: 18 },
-  { name: 'mapStyle', type: 'settable' },
-  { name: 'mapStyleV2', type: 'settable' },
-  { name: 'panorama', type: 'settable' },
-  { name: 'mapType', type: 'settable', defaultValue: () => BMap && BMAP_NORMAL_MAP },
-  { name: 'zoom', type: 'settable', defaultValue: 15 },
-  {
-    name: 'center',
-    type: 'settable',
-    methodName: 'centerAndZoom',
-    method: (map: BMap.Map, props: object, value: any) => {
-      if (value == null) {
-        return
-      }
-      map.centerAndZoom(value, map.getZoom())
-    },
-  },
+const BDMAP_ENABLEABLE_PROPERTIES = [
+  'dragging',
+  'scrollWheelZoom',
+  'doubleClickZoom',
+  'keyboard',
+  'inertialDragging',
+  'continuousZoom',
+  'pinchToZoom',
+  'autoResize',
+]
+
+const BDMAP_SETTABLE_PROPERTIES = [
+  'defaultCursor',
+  'draggingCursor',
+  'minZoom',
+  'maxZoom',
+  'mapStyle',
+  'mapStyleV2',
+  'panorama',
+  'mapType',
+  'zoom',
+  'center',
 ]
 
 const BDMAP_EVENTS = [
@@ -218,6 +228,14 @@ export const BDMapContext = React.createContext<BDMapContextValue>({})
  * 这是Baidu地图的核心组件, 表示一个地图实例. 所有控件, 覆盖物, 图层都是在这个上下文中进行渲染
  */
 export default class BDMap extends React.Component<BDMapProps, State> {
+  public static defaultProps: Partial<BDMapProps> = {
+    enableDragging: true,
+    enableDoubleClickZoom: true,
+    enablePinchToZoom: true,
+    enableAutoResize: true,
+    zoom: 18,
+  }
+
   public state: State = {
     context: {
       nativeInstance: undefined,
@@ -240,44 +258,8 @@ export default class BDMap extends React.Component<BDMapProps, State> {
       return
     }
 
-    BDMAP_PROPERTIES.forEach(property => {
-      const { name, type, defaultValue, method } = property
-      const upperName = upperFirst(name)
-
-      if (type === 'enableable') {
-        const propsName = `enable${upperName}`
-
-        if (this.props[propsName] !== prevProps[propsName]) {
-          const value = this.props[propsName] != null ? this.props[propsName] : defaultValue
-          const methodName = value ? propsName : `disable${upperName}`
-
-          if (typeof this.map[methodName] === 'function') {
-            this.map[methodName](value)
-          }
-        }
-      } else {
-        if (this.props[name] !== prevProps[name]) {
-          const defaultPropsName = `default${upperName}`
-          const value =
-            this.props[name] != null
-              ? this.props[name]
-              : this.props[defaultPropsName] != null
-              ? this.props[defaultPropsName]
-              : typeof defaultValue === 'function'
-              ? defaultValue()
-              : defaultValue
-          if (method) {
-            method(this.map, this.props, value)
-            return
-          }
-
-          const methodName = `set${upperName}`
-          if (typeof this.map[methodName] === 'function') {
-            this.map[methodName](value)
-          }
-        }
-      }
-    })
+    updateEnableableProperties(BDMAP_ENABLEABLE_PROPERTIES, this.map, this.props, prevProps)
+    updateSettableProperties(BDMAP_SETTABLE_PROPERTIES, this.map, this.props, prevProps)
 
     // update eventListeners
     updateEvents(BDMAP_EVENTS, this.map, this.props, prevProps, this)
@@ -316,42 +298,21 @@ export default class BDMap extends React.Component<BDMapProps, State> {
    */
   private initializeMap = () => {
     // TODO: 处理固定参数
-    const map = new BMap.Map(this.el.current!, {
+    // TODO: 添加公开方法
+    const map = (this.map = new BMap.Map(this.el.current!, {
       enableMapClick: true,
-    })
+    }))
 
-    // initialize properties
-    BDMAP_PROPERTIES.forEach(property => {
-      const { name, type, method } = property
-      const upperName = upperFirst(name)
+    initializeEnableableProperties(BDMAP_ENABLEABLE_PROPERTIES, map, this.props)
 
-      if (type === 'enableable') {
-        const propsName = `enable${upperName}`
-        if (this.props[propsName] != null) {
-          const methodName = this.props[propsName] ? propsName : `disable${upperName}`
-          if (typeof map[methodName] === 'function') {
-            map[methodName]()
-          }
-        }
-      } else {
-        // settable
-        const defaultPropsName = `default${upperName}`
-        const value = this.props[name] || this.props[defaultPropsName]
-        if (value != null) {
-          if (method) {
-            method(map, this.props, value)
-            return
-          }
-          const methodName = `set${upperName}`
-          if (typeof map[methodName] === 'function') {
-            map[methodName](value)
-          }
-        }
-      }
-    })
+    initializeSettableProperties(BDMAP_SETTABLE_PROPERTIES, map, this.props)
 
     // initialize events
     initializeEvents(BDMAP_EVENTS, this.map, this.props, this)
+
+    // 我的家乡, Baidu地图必须在初始化时调用centerAndZoom
+    const center = this.props.center || new BMap.Point(115.532177, 22.745408)
+    map.centerAndZoom(center, this.props.zoom!)
 
     if (isAndroid) {
       ;(map as any).addEventListener('touchstart', () => {
@@ -365,14 +326,6 @@ export default class BDMap extends React.Component<BDMapProps, State> {
       })
     }
 
-    // 清空等待队列
-    // setTimeout(() => {
-    //   const queue = BDMap.waiterQueue
-    //   BDMap.waiterQueue = []
-    //   queue.forEach(resolve => resolve())
-    // }, 100)
-
-    this.map = map
     this.setState({
       context: {
         nativeInstance: map,
@@ -380,4 +333,24 @@ export default class BDMap extends React.Component<BDMapProps, State> {
       },
     })
   }
+
+  protected handleZoomend = override('onZoomend', (evt: any) => {
+    if (this.props.onZoomChange) {
+      this.props.onZoomChange(this.map.getZoom())
+    }
+
+    if (this.props.onCenterChange) {
+      this.triggerCenterChange()
+    }
+  })
+
+  protected handleMoveend = override('onMoveend', () => {
+    if (this.props.onCenterChange) {
+      this.triggerCenterChange()
+    }
+  })
+
+  private triggerCenterChange = debounce(() => {
+    this.props.onCenterChange!(this.map.getCenter())
+  }, this.props.centerChangeDelay || 50)
 }

@@ -42,6 +42,33 @@ export function importScript(src: string): Promise<void> {
   })
 }
 
+export function override<T extends Function>(name: string, callback: T) {
+  return function(this: { props: object }, ...args: any[]) {
+    callback(...args)
+    if (typeof this.props[name] === 'function') {
+      this.props[name](...args)
+    }
+  }
+}
+
+export function hasEquals(a: any) {
+  return typeof a === 'object' && 'equals' in a
+}
+
+export function baiduEquals(a: any, b: any) {
+  if (a == null && b == null) {
+    return true
+  }
+
+  if (hasEquals(a)) {
+    return a.equals(b)
+  } else if (hasEquals(b)) {
+    return b.equals(a)
+  }
+
+  return a === b
+}
+
 export function initializeSettableProperties(properties: string[], instance: object, props: object) {
   properties.forEach(property => {
     const value = props[property]
@@ -73,8 +100,8 @@ export function initializeEvents(events: string[], instance: object, props: obje
     const propsName = `on${upperFirst(event)}`
     const overrideMethod = `handle${upperFirst(event)}`
     // 覆盖监听器
-    if (context && overrideMethod in context) {
-      instance[eventName] = context[overrideMethod]
+    if (context && typeof context[overrideMethod] === 'function') {
+      instance[eventName] = (context[overrideMethod] as Function).bind(context)
       return
     }
 
@@ -86,7 +113,10 @@ export function initializeEvents(events: string[], instance: object, props: obje
 
 export function updateSettableProperties(properties: string[], instance: object, props: object, prevProps: object) {
   properties.forEach(property => {
-    if (props[property] !== prevProps[property]) {
+    // 尝试使用Baidu对象自带的equals进行比较
+    const currentValue = props[property]
+    const prevValue = prevProps[property]
+    if (!baiduEquals(currentValue, prevValue)) {
       const value = props[property]
       const methodName = `set${upperFirst(property)}`
       if (typeof instance[methodName] === 'function') {
