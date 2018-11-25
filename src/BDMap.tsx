@@ -17,9 +17,7 @@ export interface BDMapProps {
   /** onCenterChange debounce 延迟时间 */
   centerChangeDelay?: number
 
-  /**
-   * enableable properties
-   */
+  // enableable properties
   /** 启用地图拖拽，默认启用 */
   enableDragging?: boolean
   /** 启用滚轮放大缩小，默认禁用 */
@@ -37,9 +35,7 @@ export interface BDMapProps {
   /** 启用自动适应容器尺寸变化，默认启用 */
   enableAutoResize?: boolean
 
-  /**
-   * settable properties
-   */
+  // settable properties
   /** 设置地图默认的鼠标指针样式。参数cursor应符合CSS的cursor属性规范 */
   defaultCursor?: string
   /** 设置拖拽地图时的鼠标指针样式。参数cursor应符合CSS的cursor属性规范 */
@@ -54,21 +50,18 @@ export interface BDMapProps {
   mapStyleV2?: any[]
   /** 将全景实例与Map类进行绑定 */
   panorama?: BMap.Panorama
-  /** 设置地图类型。注意，当设置地图类型为BMAP_PERSPECTIVE_MAP时，需要调用map.setCurrentCity方法设置城市 */
+  /** 设置地图类型。注意，当设置地图类型为BMAP_PERSPECTIVE_MAP时，需要将currentCity方法设置城市 */
   mapType?: BMap.MapType
+  /** 设置地图城市，注意当地图初始化时的类型设置为BMAP_PERSPECTIVE_MAP时, 必须设置 */
+  currentCity?: string
 
-  /**
-   * controlled properties
-   */
+  // controlled properties
   /** 设置地图的缩放级别 */
   zoom?: number
   /** 设置地图中心点, 必须设置一个初始中心点, 否则百度地图无法正常初始化 */
   center: BMap.Point
 
-  /**
-   * events from Native Map
-   */
-
+  // events from Native Map
   onClick?: (
     event: {
       type: string
@@ -143,13 +136,17 @@ export interface BDMapProps {
   onTouchend?: (event: { type: string; target: any; point: BMap.Point; pixel: BMap.Pixel }) => void
   onLongpress?: (event: { type: string; target: any; point: BMap.Point; pixel: BMap.Pixel }) => void
 
-  /**
-   * Custom events
-   */
+  // Custom events
   /** 缩放级别变动. 和zoom配合实现受控模式  */
   onZoomChange?: (zoom: number) => void
   /** 中心点变动. 和center配合实现受控模式. 可以使用centerChangeDelay设置debounce延迟  */
   onCenterChange?: (center: BMap.Point) => void
+
+  // static properties
+  /** 是否启用使用高分辨率地图。在iPhone4及其后续设备上，可以通过开启此选项获取更高分辨率的底图，v1.2,v1.3版本默认不开启，v1.4默认为开启状态 */
+  enableHighResolution?: boolean
+  /** 是否开启底图可点功能，默认启用 */
+  enableMapClick?: boolean
 }
 
 export interface BDMapContextValue {
@@ -182,6 +179,7 @@ const BDMAP_SETTABLE_PROPERTIES = [
   'mapStyleV2',
   'panorama',
   'mapType',
+  'currentCity',
   'zoom',
   'center',
 ]
@@ -294,13 +292,98 @@ export default class BDMap extends React.Component<BDMapProps, State> {
   }
 
   /**
+   * 返回地图可视区域，以地理坐标表示
+   */
+  public getBounds() {
+    return this.map.getBounds()
+  }
+
+  /**
+   * 返回地图视图的大小，以像素表示
+   */
+  public getSize() {
+    return this.map.getSize()
+  }
+
+  /**
+   * 返回两点之间的距离，单位是米
+   */
+  public getDistance(start: BMap.Point, end: BMap.Point) {
+    return this.map.getDistance(start, end)
+  }
+
+  /**
+   * 根据提供的地理区域或坐标设置地图视野，调整后的视野会保证包含提供的地理区域或坐标
+   */
+  public setViewport(view: BMap.Point[] | BMap.Viewport, options?: BMap.ViewportOptions) {
+    // @ts-ignore
+    this.map.setViewport(view, options)
+  }
+
+  /**
+   * 将地图的中心点更改为给定的点。如果该点在当前的地图视图中已经可见，则会以平滑动画的方式移动到中心点位置。可以通过配置强制移动过程不使用动画效果
+   */
+  public panTo(center: BMap.Point, opts?: BMap.PanOptions) {
+    this.map.panTo(center, opts)
+  }
+
+  /**
+   * 将地图在水平位置上移动x像素，垂直位置上移动y像素。如果指定的像素大于可视区域范围或者在配置中指定没有动画效果，则不执行滑动效果
+   */
+  public panBy(x: number, y: number, opts?: BMap.PanOptions) {
+    this.map.panBy(x, y, opts)
+  }
+
+  /**
+   * 放大一级视图
+   */
+  public zoomIn() {
+    this.map.zoomIn()
+  }
+
+  /**
+   * 缩小一级视图
+   */
+  public zoomOut() {
+    this.map.zoomOut()
+  }
+
+  /**
+   * 根据地理坐标获取对应的覆盖物容器的坐标，此方法用于自定义覆盖物
+   */
+  public pointToOverlayPixel(point: BMap.Point) {
+    return this.map.pointToOverlayPixel(point)
+  }
+
+  /**
+   * pixel 根据覆盖物容器的坐标获取对应的地理坐标
+   */
+  public overlayPixelToPoint(pixel: BMap.Pixel) {
+    return this.map.overlayPixelToPoint(pixel)
+  }
+
+  /**
+   * 像素坐标转换为经纬度坐标
+   */
+  public pixelToPoint(pixel: BMap.Pixel) {
+    return this.map.pixelToPoint(pixel)
+  }
+
+  /**
+   * 经纬度坐标转换为像素坐标
+   */
+  public pointToPixel(point: BMap.Point) {
+    return this.map.pointToPixel(point)
+  }
+
+  /**
    * initialize BDMap instance
    */
   private initializeMap = () => {
-    // TODO: 处理固定参数
-    // TODO: 添加公开方法
+    const { enableMapClick, enableHighResolution } = this.props
     const map = (this.map = new BMap.Map(this.el.current!, {
-      enableMapClick: true,
+      enableMapClick,
+      enableHighResolution,
     }))
 
     initializeEnableableProperties(BDMAP_ENABLEABLE_PROPERTIES, map, this.props)
