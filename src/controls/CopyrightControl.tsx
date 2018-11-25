@@ -1,11 +1,11 @@
-/**
- * 表示版权控件，您可以在地图上添加自己的版权信息。每一个版权信息需要包含如下内容：版权的唯一标识、版权内容和其适用的区域范围。
- */
 import React from 'react'
 import ReactDOM from 'react-dom'
-import Control from './Control'
+import Control, { ControlProps } from './Control'
 
-export interface CopyrightControlProps {
+export interface CopyrightControlProps extends ControlProps {
+  /**
+   * 放置CopyrightControl.Item
+   */
   children: React.ReactNode
 }
 
@@ -20,6 +20,10 @@ export interface CopyrightProps {
 }
 
 let uid: number = 0
+
+/**
+ * 表示版权控件，您可以在地图上添加自己的版权信息。每一个版权信息需要包含如下内容：版权的唯一标识、版权内容和其适用的区域范围。
+ */
 export default class CopyrightControl extends Control<CopyrightControlProps> {
   /**
    * 渲染Copyright内容
@@ -62,16 +66,9 @@ export default class CopyrightControl extends Control<CopyrightControlProps> {
     }
   }
 
-  public constructor(props: CopyrightControlProps) {
+  public constructor(props: any) {
     super(props)
     this.instance = new BMap.CopyrightControl()
-  }
-
-  public componentDidMount() {
-    if (this.context) {
-      this.initialProperties()
-      this.context.nativeInstance!.addControl(this.instance)
-    }
   }
 
   public render() {
