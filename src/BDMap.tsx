@@ -1,40 +1,61 @@
-/**
- * Map Container
- */
 import React from 'react'
 import upperFirst from 'lodash/upperFirst'
-import lowerFirst from 'lodash/lowerFirst'
-import { isAndroid } from './utils'
-import { BDMAP_PROPERTIES, BDMAP_CUSTOM_EVENT } from './constants'
+import { isAndroid, initializeEvents, updateEvents } from './utils'
 
 export interface BDMapProps {
   className?: string
   style?: React.CSSProperties
+
   /**
-   * properties
+   * enableable properties
    */
+  /** 启用地图拖拽，默认启用 */
   enableDragging?: boolean
+  /** 启用滚轮放大缩小，默认禁用 */
   enableScrollWheelZoom?: boolean
+  /** 启用双击放大，默认启用 */
   enableDoubleClickZoom?: boolean
+  /** 启用键盘操作，默认禁用。键盘的上、下、左、右键可连续移动地图。同时按下其中两个键可使地图进行对角移动。PgUp、PgDn、Home和End键会使地图平移其1/2的大小。+、-键会使地图放大或缩小一级 */
   enableKeyboard?: boolean
+  /** 启用地图惯性拖拽，默认禁用 */
   enableInertialDragging?: boolean
+  /** 启用连续缩放效果，默认禁用 */
   enableContinuousZoom?: boolean
+  /** 启用双指操作缩放，默认启用 */
   enablePinchToZoom?: boolean
+  /** 启用自动适应容器尺寸变化，默认启用 */
   enableAutoResize?: boolean
+
+  /**
+   * settable properties
+   */
+  /** 设置地图默认的鼠标指针样式。参数cursor应符合CSS的cursor属性规范 */
+  defaultCursor?: string
+  /** 设置拖拽地图时的鼠标指针样式。参数cursor应符合CSS的cursor属性规范 */
+  draggingCursor?: string
+  /** 设置地图允许的最小级别。取值不得小于地图类型所允许的最小级别, 默认是3 */
   minZoom?: number
+  /** 设置地图允许的最大级别。取值不得大于地图类型所允许的最大级别, 默认是18  */
   maxZoom?: number
-  mapStyle?: number
+  /** 设置地图样式，样式包括地图底图颜色和地图要素是否展示两部分 */
+  mapStyle?: BMap.MapStyle
+  /** 设置地图个性化样式V2版本，仅支持现代浏览器 */
+  mapStyleV2?: any[]
+  /** 将全景实例与Map类进行绑定 */
+  panorama?: BMap.Panorama
+  /** 设置地图类型。注意，当设置地图类型为BMAP_PERSPECTIVE_MAP时，需要调用map.setCurrentCity方法设置城市 */
+  mapType?: BMap.MapType
+
   /**
    * controlled properties
    */
-  defaultZoom?: number
   zoom?: number
-  defaultCenter?: BMap.Point
   center?: BMap.Point
 
   /**
    * events from Native Map
    */
+
   onClick?: (
     event: {
       type: string
@@ -91,16 +112,20 @@ export interface BDMapProps {
   onAddtilelayer?: (event: { type: string; target: any }) => void
   onRemovetilelayer?: (event: { type: string; target: any }) => void
   onLoad?: (
-    event: { type: string; target: any; point: BMap.Point; pixel: BMap.Pixel; zoom: number },
+    event: {
+      type: string
+      target: any
+      point: BMap.Point
+      pixel: BMap.Pixel
+      zoom: number
+    },
   ) => void
   onResize?: (event: { type: string; target: any; size: BMap.Size }) => void
   onHotspotclick?: (event: { type: string; target: any; spots: BMap.HotspotOptions }) => void
   onHotspotover?: (event: { type: string; target: any; spots: BMap.HotspotOptions }) => void
   onHotspotout?: (event: { type: string; target: any; spots: BMap.HotspotOptions }) => void
   onTilesloaded?: (event: { type: string; target: any }) => void
-  onTouchstart?: (
-    event: { type: string; target: any; point: BMap.Point; pixel: BMap.Pixel },
-  ) => void
+  onTouchstart?: (event: { type: string; target: any; point: BMap.Point; pixel: BMap.Pixel }) => void
   onTouchmove?: (event: { type: string; target: any; point: BMap.Point; pixel: BMap.Pixel }) => void
   onTouchend?: (event: { type: string; target: any; point: BMap.Point; pixel: BMap.Pixel }) => void
   onLongpress?: (event: { type: string; target: any; point: BMap.Point; pixel: BMap.Pixel }) => void
@@ -116,8 +141,82 @@ interface State {
   context: BDMapContextValue
 }
 
+/**
+ * 百度地图支持的属性
+ */
+const BDMAP_PROPERTIES = [
+  { name: 'dragging', type: 'enableable', defaultValue: true },
+  { name: 'scrollWheelZoom', type: 'enableable', defaultValue: false },
+  { name: 'doubleClickZoom', type: 'enableable', defaultValue: true },
+  { name: 'keyboard', type: 'enableable', defaultValue: false },
+  { name: 'inertialDragging', type: 'enableable', defaultValue: false },
+  { name: 'continuousZoom', type: 'enableable', defaultValue: false },
+  { name: 'pinchToZoom', type: 'enableable', defaultValue: true },
+  { name: 'autoResize', type: 'enableable', defaultValue: true },
+  // settable
+  { name: 'defaultCursor', type: 'settable', default: 'default' },
+  { name: 'draggingCursor', type: 'settable', default: 'grabbing' },
+  { name: 'minZoom', type: 'settable', defaultValue: 3 },
+  { name: 'maxZoom', type: 'settable', defaultValue: 18 },
+  { name: 'mapStyle', type: 'settable' },
+  { name: 'mapStyleV2', type: 'settable' },
+  { name: 'panorama', type: 'settable' },
+  { name: 'mapType', type: 'settable', defaultValue: () => BMap && BMAP_NORMAL_MAP },
+  { name: 'zoom', type: 'settable', defaultValue: 15 },
+  {
+    name: 'center',
+    type: 'settable',
+    methodName: 'centerAndZoom',
+    method: (map: BMap.Map, props: object, value: any) => {
+      if (value == null) {
+        return
+      }
+      map.centerAndZoom(value, map.getZoom())
+    },
+  },
+]
+
+const BDMAP_EVENTS = [
+  'click',
+  'dblclick',
+  'rightclick',
+  'rightdblclick',
+  'maptypechange',
+  'mousemove',
+  'mouseover',
+  'mouseout',
+  'movestart',
+  'moving',
+  'moveend',
+  'zoomstart',
+  'zoomend',
+  'addoverlay',
+  'addcontrol',
+  'removecontrol',
+  'removeoverlay',
+  'clearoverlays',
+  'dragstart',
+  'dragging',
+  'dragend',
+  'addtilelayer',
+  'removetilelayer',
+  'load',
+  'resize',
+  'hotspotclick',
+  'hotspotover',
+  'hotspotout',
+  'tilesloaded',
+  'touchstart',
+  'touchmove',
+  'touchend',
+  'longpress',
+]
+
 export const BDMapContext = React.createContext<BDMapContextValue>({})
 
+/**
+ * 这是Baidu地图的核心组件, 表示一个地图实例. 所有控件, 覆盖物, 图层都是在这个上下文中进行渲染
+ */
 export default class BDMap extends React.Component<BDMapProps, State> {
   public state: State = {
     context: {
@@ -181,17 +280,7 @@ export default class BDMap extends React.Component<BDMapProps, State> {
     })
 
     // update eventListeners
-    Object.keys(this.props).forEach(key => {
-      if (key.startsWith('on')) {
-        if (this.props[key] !== prevProps[key]) {
-          let [, eventName] = key.match(/^on(.*)$/)!
-          eventName = lowerFirst(eventName)
-          if (BDMAP_CUSTOM_EVENT.indexOf(eventName) === -1) {
-            this.map[`on${eventName}`] = this.props[key]
-          }
-        }
-      }
-    })
+    updateEvents(BDMAP_EVENTS, this.map, this.props, prevProps, this)
   }
 
   public render() {
@@ -262,15 +351,7 @@ export default class BDMap extends React.Component<BDMapProps, State> {
     })
 
     // initialize events
-    Object.keys(this.props).forEach(key => {
-      if (key.startsWith('on') && typeof this.props[key] === 'function') {
-        let [, eventName] = key.match(/^on(.*)$/)!
-        eventName = lowerFirst(eventName)
-        if (BDMAP_CUSTOM_EVENT.indexOf(eventName) === -1) {
-          map[`on${eventName}`] = this.props[key]
-        }
-      }
-    })
+    initializeEvents(BDMAP_EVENTS, this.map, this.props, this)
 
     if (isAndroid) {
       ;(map as any).addEventListener('touchstart', () => {

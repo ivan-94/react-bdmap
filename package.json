@@ -40,9 +40,17 @@
     "semi": false,
     "singleQuote": true,
     "tabWidth": 2,
-    "printWidth": 80,
+    "printWidth": 120,
     "trailingComma": "all",
-    "arrowParens": "avoid"
+    "arrowParens": "avoid",
+    "overrides": [
+      {
+        "files": "*.md",
+        "options": {
+          "printWidth": 80
+        }
+      }
+    ]
   },
   "husky": {
     "hooks": {

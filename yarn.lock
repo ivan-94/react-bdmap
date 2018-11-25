@@ -5406,7 +5406,7 @@ preserve@^0.2.0:
 
 prettier@^1.15.2:
   version "1.15.2"
-  resolved "https://registry.npmjs.org/prettier/-/prettier-1.15.2.tgz#d31abe22afa4351efa14c7f8b94b58bb7452205e"
+  resolved "http://registry.npm.taobao.org/prettier/download/prettier-1.15.2.tgz#d31abe22afa4351efa14c7f8b94b58bb7452205e"
 
 pretty-quick@^1.8.0:
   version "1.8.0"
