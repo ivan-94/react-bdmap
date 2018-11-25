@@ -40,7 +40,7 @@ export default class BDMapLoader extends React.Component<BDMapLoaderProps> {
   /**
    * 等待BMap就绪
    */
-  public static async onReady() {
+  public static async ready() {
     if (window.BMap) {
       return
     }

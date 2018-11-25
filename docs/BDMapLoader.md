@@ -69,3 +69,17 @@ class Example extends React.Component {
 
 ;<Example />
 ```
+
+BDMapLoader 还提供了一个`ready`静态方法, 可以用于在组件之外等待百度地图加载完成. 例如:
+
+```js static
+async foo() {
+  try {
+    await BDMapLoader.ready()
+    // 处理依赖于百度地图全局BMap的业务逻辑
+    dosomething()
+  } catch(err) {
+    // 百度加载失败
+  }
+}
+```
