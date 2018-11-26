@@ -5,26 +5,32 @@ module.exports = {
   title: `react-bdmap v${pkg.version}`,
   sections: [
     {
-      name: 'Getting Started',
+      name: '快速开始',
       content: 'README.md',
     },
     {
-      name: '容器(Container)',
+      name: '容器',
       components: ['src/BDMapLoader.tsx', 'src/BDMap.tsx'],
       sectionDepth: 1,
     },
     {
-      name: '控件(Controls)',
+      name: '控件',
       components: 'src/controls/[A-Z]*.tsx',
+      sections: [
+        {
+          name: '版权控件',
+          components: ['src/controls/CopyrightControl/*.tsx'],
+        },
+      ],
       sectionDepth: 1,
     },
     {
-      name: '覆盖物(Overlays)',
+      name: '覆盖物',
       components: 'src/overlays/[A-Z]*.tsx',
       sectionDepth: 1,
     },
     {
-      name: '地图图层(TileLayer)',
+      name: '地图图层',
       components: [
         'src/tileLayers/TileLayer.tsx',
         'src/tileLayers/TrafficLayer.tsx',
@@ -34,14 +40,17 @@ module.exports = {
       sectionDepth: 0,
     },
     {
-      name: '其他(Other)',
+      name: '其他',
       sections: [
         {
           name: 'withMap',
           content: 'docs/withMap.md',
         },
+        {
+          name: '右键菜单',
+          components: ['src/ContextMenu/*.tsx'],
+        },
       ],
-      components: ['src/ContextMenu.tsx'],
       sectionDepth: 1,
     },
   ],
@@ -72,10 +81,7 @@ module.exports = {
   require: [path.resolve(__dirname, 'docs/helpers/setup.tsx')],
   // Typescript支持
   resolver: require('react-docgen').resolver.findAllComponentDefinitions,
-  propsParser: require('react-docgen-typescript').withCustomConfig(
-    './tsconfig.json',
-    [],
-  ).parse,
+  propsParser: require('react-docgen-typescript').withCustomConfig('./tsconfig.json', []).parse,
   webpackConfig: {
     resolve: {
       // Add `.ts` and `.tsx` as a resolvable extension.

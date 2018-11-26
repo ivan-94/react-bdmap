@@ -9,23 +9,18 @@
     "map",
     "web"
   ],
-  "main": "lib/index.js",
-  "module": "es/index.js",
-  "typings": "es/index.d.ts",
+  "publishConfig": {
+    "registry": "https://registry.npmjs.org",
+    "access": "public"
+  },
+  "main": "index.js",
+  "typings": "index.d.ts",
   "scripts": {
-    "prebuild": "rimraf lib es",
-    "build:es6": "tsc -d --outDir ./lib --module CommonJS ",
-    "postbuild:es6": "cpx \"src/**/!(example)/*.+(css|jpg|jpeg|gif|png)\" ./lib",
-    "postbuild:es6module": "cpx \"src/**/!(example)/*.+(css|jpg|jpeg|gif|png)\" ./es",
-    "build:es6module": "tsc -d --outDir ./es",
-    "build": "npm run build:es6 && npm run build:es6module",
+    "prebuild": "rimraf dist",
+    "build": "tsc -d --outDir ./dist --module CommonJS ",
     "build:doc": "styleguidist build",
     "start:doc": "styleguidist server"
   },
-  "files": [
-    "lib",
-    "es"
-  ],
   "repository": {
     "type": "git",
     "url": "git+https://github.com/carney520/react-bdmap.git"
@@ -43,14 +38,12 @@
     "printWidth": 120,
     "trailingComma": "all",
     "arrowParens": "avoid",
-    "overrides": [
-      {
-        "files": "*.md",
-        "options": {
-          "printWidth": 80
-        }
+    "overrides": [{
+      "files": "*.md",
+      "options": {
+        "printWidth": 80
       }
-    ]
+    }]
   },
   "husky": {
     "hooks": {
