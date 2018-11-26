@@ -7,5 +7,6 @@ execSync(`npm run build`, {
   stdio: 'inherit',
 })
 copyFileSync('package.json', './dist/package.json')
+copyFileSync('README.md', './dist/README.md')
 process.chdir('./dist')
 execSync(`npm publish --access public`, { stdio: 'inherit' })
