@@ -17,11 +17,11 @@ export interface CustomOverlayProps {
 export function getClass() {
   // @ts-ignore BMap.Overlay 其实是类
   return class extends BMap.Overlay {
-    private position: BMap.Point
-    private offset?: BMap.Size
-    private elm: HTMLDivElement
-    private pane: PaneType
-    private map: BMap.Map
+    public position: BMap.Point
+    public offset?: BMap.Size
+    public elm: HTMLDivElement
+    public pane: PaneType
+    public map: BMap.Map
 
     public constructor(position: BMap.Point, elm: HTMLDivElement, pane: PaneType = 'markerPane') {
       super()

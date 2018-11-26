@@ -13,7 +13,7 @@ export function getClass() {
   return class extends BMap.Control {
     public defaultAnchor = BMAP_ANCHOR_TOP_RIGHT
     public defaultOffset = new BMap.Size(10, 10)
-    private elm: HTMLElement
+    public elm: HTMLElement
 
     public constructor(elm: HTMLElement) {
       super()
