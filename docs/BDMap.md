@@ -1,5 +1,33 @@
+BDMap 必须作为 BDMapLoader 下级组件，保证 BMap 加载完毕后才开始渲染。一个 BMapLoader 下可以存在多个 BDMap 地图实例：
 
-zoom和center可以支持受控模式
+```jsx static
+class MyMap extends React.Component {
+  state = {
+    center1: new BMap.Point(113.553717, 22.211009),
+    center2: new BMap.Point(113.553717, 22.211009),
+  }
+  render() {
+    return (
+      <>
+        <BDMap center={this.state.center1}>{/* controls, overlays */}</BDMap>
+        <BDMap center={this.state.center2}>{/* controls, overlays */}</BDMap>
+      </>
+    )
+  }
+}
+
+function App() {
+  return (
+    <BDMapLoader apiKey="XXX">
+      <MyMap />
+    </BDMapLoader>
+  )
+}
+
+ReactDOM.render(<App />, document.getElementById('root'))
+```
+
+zoom 和 center 可以支持受控模式
 
 ```jsx
 class Example extends React.Component {
@@ -19,12 +47,16 @@ class Example extends React.Component {
           zoom={this.state.zoom}
           center={this.state.center}
           enableScrollWheelZoom
-          onZoomChange={(zoom) => this.setState({zoom})}
-          onCenterChange={(center) => {this.setState({center}); console.log('center change')}}
-        >
-        </BDMap>
+          onZoomChange={zoom => this.setState({ zoom })}
+          onCenterChange={center => {
+            this.setState({ center })
+            console.log('center change')
+          }}
+        />
         <div>Zoom: {this.state.zoom}</div>
-        <div>center: {this.state.center.lng}, {this.state.center.lat}</div>
+        <div>
+          center: {this.state.center.lng}, {this.state.center.lat}
+        </div>
       </>
     )
   }

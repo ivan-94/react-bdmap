@@ -2,6 +2,7 @@ import React from 'react'
 import BDMapLoader from '../../src/BDMapLoader'
 import withMap from '../../src/withMap'
 import BDMap from '../../src/BDMap'
+import { importScript } from '../../src/utils'
 
 class Map extends React.Component {
   public state = {
@@ -45,3 +46,5 @@ global.logger = (action: string) => (...args: any[]) => {
 
 // @ts-ignore
 global.withMap = withMap
+// @ts-ignore
+global.importScript = importScript
