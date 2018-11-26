@@ -23,10 +23,9 @@ const CONTROL_EVENTS = ['locationSuccess', 'locationError']
 
 /**
  * 针对移动端开发，默认位于地图左下方
+ * @visibleName 定位控件
  */
-export default class GeolocationControl extends Control<
-  GeolocationControlProps
-> {
+export default class GeolocationControl extends Control<GeolocationControlProps> {
   public constructor(props: any) {
     super(props)
 

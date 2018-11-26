@@ -9,6 +9,7 @@ const CONTROL_PROPERTIES = ['unit']
 
 /**
  * 表示比例尺控件, 默认位于地图左下方，显示地图的比例关系
+ * @visibleName 比例尺控件
  */
 export default class ScaleControl extends Control<ScaleControlProps> {
   public constructor(props: any) {

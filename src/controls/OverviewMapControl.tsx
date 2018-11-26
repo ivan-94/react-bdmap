@@ -6,9 +6,7 @@ export interface OverviewMapControlProps extends ControlProps {
   /** 缩略地图添加到地图后的开合状态，默认为关闭 */
   defaultOpen?: boolean
   /** 缩略地图开合状态发生变化后触发此事件 */
-  onViewchanged?: (
-    event: { type: string; target: any; isOpen: boolean },
-  ) => void
+  onViewchanged?: (event: { type: string; target: any; isOpen: boolean }) => void
   /** 缩略地图开合状态发生变化过程中触发此事件 */
   onViewchanging?: (event: { type: string; target: any }) => void
 }
@@ -18,10 +16,9 @@ const CONTROL_EVENTS = ['viewchanged', 'viewchanging']
 
 /**
  * 表示缩略地图控件. 默认位于地图右下方，是一个可折叠的缩略地图
+ * @visibleName 缩略图控件
  */
-export default class OverviewMapControl extends Control<
-  OverviewMapControlProps
-> {
+export default class OverviewMapControl extends Control<OverviewMapControlProps> {
   public constructor(props: any) {
     super(props)
 
