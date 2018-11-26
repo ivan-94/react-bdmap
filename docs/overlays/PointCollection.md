@@ -44,7 +44,7 @@ class Example extends React.Component {
   }
 
   loadData() {
-    importScript('http://lbsyun.baidu.com/jsdemo/data/points-sample-data.js')
+    importScript('https://lbsyun.baidu.com/jsdemo/data/points-sample-data.js')
       .then(() => {
         const points = []
         for (let i = 0; i < window.data.data.length; i++) {

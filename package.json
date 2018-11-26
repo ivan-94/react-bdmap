@@ -19,7 +19,8 @@
     "prebuild": "rimraf dist",
     "build": "tsc -d --outDir ./dist --module CommonJS ",
     "build:doc": "styleguidist build",
-    "start:doc": "styleguidist server"
+    "start:doc": "styleguidist server",
+    "deploy:doc": "gh-pages -d styleguide"
   },
   "repository": {
     "type": "git",
@@ -38,12 +39,14 @@
     "printWidth": 120,
     "trailingComma": "all",
     "arrowParens": "avoid",
-    "overrides": [{
-      "files": "*.md",
-      "options": {
-        "printWidth": 80
+    "overrides": [
+      {
+        "files": "*.md",
+        "options": {
+          "printWidth": 80
+        }
       }
-    }]
+    ]
   },
   "husky": {
     "hooks": {
@@ -57,6 +60,7 @@
     "@types/react-dom": "^16.0.9",
     "@types/shallowequal": "^0.2.3",
     "cpx": "^1.5.0",
+    "gh-pages": "^2.0.1",
     "husky": "^1.2.0",
     "parcel": "^1.10.3",
     "prettier": "^1.15.2",
