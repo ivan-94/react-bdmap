@@ -12,6 +12,10 @@
 > react-bdmap 是基于 React 封装的百度地图组件库. 以 React 组件化的思维来, 声明式地开发地图应用. 除了内置组件,
 > react-bdmap 也封装了一些易用的组件帮助实现自定义地图组件. 欢迎交流或贡献代码
 
+## Requirement
+
+'react & react-dom' > 16.6
+
 ## 安装
 
 ```shell

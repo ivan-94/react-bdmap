@@ -1,8 +1,9 @@
 const path = require('path')
 const pkg = require('./package.json')
+const { theme, styles } = require('./styleguide.style')
 
 module.exports = {
-  title: `react-bdmap v${pkg.version}`,
+  title: `REACT-BDMAP`,
   sections: [
     {
       name: '快速开始',
@@ -78,10 +79,20 @@ module.exports = {
     const relative = path.relative(srcDir, cppath)
     return path.join(baseDir, relative).replace(/\.tsx?$/, '.md')
   },
+  editorConfig: {
+    theme: 'monokai',
+  },
+  theme: theme,
+  styles: styles,
+  exampleMode: 'expand',
+  usageMode: 'expand',
   require: [path.resolve(__dirname, 'docs/helpers/setup.tsx')],
   // Typescript支持
   resolver: require('react-docgen').resolver.findAllComponentDefinitions,
   propsParser: require('react-docgen-typescript').withCustomConfig('./tsconfig.json', []).parse,
+  styleguideComponents: {
+    LogoRenderer: path.join(__dirname, 'styleguide-components/Logo'),
+  },
   webpackConfig: {
     resolve: {
       // Add `.ts` and `.tsx` as a resolvable extension.
@@ -90,13 +101,27 @@ module.exports = {
     module: {
       rules: [
         {
-          test: /\.tsx?$/,
-          exclude: /node_modules/,
-          use: [
+          oneOf: [
             {
-              loader: require.resolve('ts-loader'),
+              test: /\.(js|mjs|jsx|ts|tsx)$/,
+              exclude: /node_modules/,
+              loader: require.resolve('babel-loader'),
               options: {
-                transpileOnly: true,
+                babelrc: false,
+                configFile: false,
+                presets: [require.resolve('babel-preset-react-app')],
+                cacheDirectory: true,
+              },
+            },
+            {
+              loader: require.resolve('file-loader'),
+              // Exclude `js` files to keep "css" loader working as it injects
+              // its runtime that would otherwise be processed through "file" loader.
+              // Also exclude `html` and `json` extensions so they get processed
+              // by webpacks internal loaders.
+              exclude: [/\.(js|mjs|jsx|ts|tsx)$/, /\.html$/, /\.json$/],
+              options: {
+                name: 'static/media/[name].[hash:8].[ext]',
               },
             },
           ],
