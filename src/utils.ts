@@ -1,4 +1,5 @@
 import upperFirst from 'lodash/upperFirst'
+import memoize from 'lodash/memoize'
 
 const UA = navigator.userAgent.toLowerCase()
 export const isMac = UA.indexOf('macintosh') !== -1
@@ -94,11 +95,30 @@ export function initializeEnableableProperties(properties: string[], instance: o
   })
 }
 
+/**
+ * 转换foo_bar 为 onfoobar
+ */
+const getBDEventHandleName = memoize((event: string) => {
+  return `on${event.split('_').join('')}`
+})
+
+/**
+ * 转换foo_bar 为 FooBar
+ */
+const getPropsEventHandleName = memoize((event: string) => {
+  return event
+    .split('_')
+    .map(upperFirst)
+    .join('')
+})
+
 export function initializeEvents(events: string[], instance: object, props: object, context?: object) {
   events.forEach(event => {
-    const eventName = `on${event}`
-    const propsName = `on${upperFirst(event)}`
-    const overrideMethod = `handle${upperFirst(event)}`
+    const eventName = getBDEventHandleName(event)
+    const normalizeEventName = getPropsEventHandleName(event)
+    const propsName = `on${normalizeEventName}`
+    const overrideMethod = `handle${normalizeEventName}`
+
     // 覆盖监听器
     if (context && typeof context[overrideMethod] === 'function') {
       instance[eventName] = (context[overrideMethod] as Function).bind(context)
@@ -143,9 +163,10 @@ export function updateEnableableProperties(properties: string[], instance: objec
 
 export function updateEvents(events: string[], instance: object, props: object, prevProps: object, context?: object) {
   events.forEach(event => {
-    const eventName = `on${event}`
-    const propsName = `on${upperFirst(event)}`
-    const overrideMethod = `handle${upperFirst(event)}`
+    const eventName = getBDEventHandleName(event)
+    const normalizeEventName = getPropsEventHandleName(event)
+    const propsName = `on${normalizeEventName}`
+    const overrideMethod = `handle${normalizeEventName}`
 
     if (context && overrideMethod in context) {
       return

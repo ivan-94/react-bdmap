@@ -19,7 +19,10 @@ export interface GeolocationControlProps extends ControlProps {
   onLocationError?: (error: { statusCode: number }) => void
 }
 
-const CONTROL_EVENTS = ['locationSuccess', 'locationError']
+/**
+ * 百度地图的事件命名不规范, 正常都是小写, 而这里是小写驼峰式
+ */
+const CONTROL_EVENTS = ['location_Success', 'location_Error']
 
 /**
  * 针对移动端开发，默认位于地图左下方
