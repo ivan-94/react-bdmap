@@ -61,6 +61,12 @@ export interface BDMapProps {
   /** 设置地图中心点, 必须设置一个初始中心点, 否则百度地图无法正常初始化 */
   center: BMap.Point
 
+  // static properties
+  /** 是否启用使用高分辨率地图。在iPhone4及其后续设备上，可以通过开启此选项获取更高分辨率的底图，v1.2,v1.3版本默认不开启，v1.4默认为开启状态 */
+  enableHighResolution?: boolean
+  /** 是否开启底图可点功能，默认启用 */
+  enableMapClick?: boolean
+
   // events from Native Map
   onClick?: (
     event: {
@@ -71,8 +77,8 @@ export interface BDMapProps {
       overlay: BMap.Overlay
     },
   ) => void
-  onDblclick?: (event: { type: string; target: any; point: BMap.Point; pixel: BMap.Pixel }) => void
-  onRightclick?: (
+  onDoubleClick?: (event: { type: string; target: any; point: BMap.Point; pixel: BMap.Pixel }) => void
+  onRightClick?: (
     event: {
       type: string
       target: any
@@ -81,7 +87,7 @@ export interface BDMapProps {
       overlay: BMap.Overlay
     },
   ) => void
-  onRightdblclick?: (
+  onRightDoubleClick?: (
     event: {
       type: string
       target: any
@@ -90,8 +96,8 @@ export interface BDMapProps {
       overlay: BMap.Overlay
     },
   ) => void
-  onMaptypechange?: (event: { type: string; target: any }) => void
-  onMousemove?: (
+  onMapTypeChange?: (event: { type: string; target: any }) => void
+  onMouseMove?: (
     event: {
       type: string
       target: any
@@ -100,23 +106,23 @@ export interface BDMapProps {
       overlay: BMap.Overlay
     },
   ) => void
-  onMouseover?: (event: { type: string; target: any }) => void
-  onMouseout?: (event: { type: string; target: any }) => void
-  onMovestart?: (event: { type: string; target: any }) => void
+  onMouseOver?: (event: { type: string; target: any }) => void
+  onMouseOut?: (event: { type: string; target: any }) => void
+  onMoveStart?: (event: { type: string; target: any }) => void
   onMoving?: (event: { type: string; target: any }) => void
-  onMoveend?: (event: { type: string; target: any }) => void
-  onZoomstart?: (event: { type: string; target: any }) => void
-  onZoomend?: (event: { type: string; target: any }) => void
-  onAddoverlay?: (event: { type: string; target: any }) => void
-  onAddcontrol?: (event: { type: string; target: any }) => void
-  onRemovecontrol?: (event: { type: string; target: any }) => void
-  onRemoveoverlay?: (event: { type: string; target: any }) => void
-  onClearoverlays?: (event: { type: string; target: any }) => void
-  onDragstart?: (event: { type: string; target: any; point: BMap.Point; pixel: BMap.Pixel }) => void
+  onMoveEnd?: (event: { type: string; target: any }) => void
+  onZoomStart?: (event: { type: string; target: any }) => void
+  onZoomEnd?: (event: { type: string; target: any }) => void
+  onAddOverlay?: (event: { type: string; target: any }) => void
+  onAddControl?: (event: { type: string; target: any }) => void
+  onRemoveControl?: (event: { type: string; target: any }) => void
+  onRemoveOverlay?: (event: { type: string; target: any }) => void
+  onClearOverlays?: (event: { type: string; target: any }) => void
+  onDragStart?: (event: { type: string; target: any; point: BMap.Point; pixel: BMap.Pixel }) => void
   onDragging?: (event: { type: string; target: any; point: BMap.Point; pixel: BMap.Pixel }) => void
-  onDragend?: (event: { type: string; target: any; point: BMap.Point; pixel: BMap.Pixel }) => void
-  onAddtilelayer?: (event: { type: string; target: any }) => void
-  onRemovetilelayer?: (event: { type: string; target: any }) => void
+  onDragEnd?: (event: { type: string; target: any; point: BMap.Point; pixel: BMap.Pixel }) => void
+  onAddTileLayer?: (event: { type: string; target: any }) => void
+  onRemoveTileLayer?: (event: { type: string; target: any }) => void
   onLoad?: (
     event: {
       type: string
@@ -127,26 +133,20 @@ export interface BDMapProps {
     },
   ) => void
   onResize?: (event: { type: string; target: any; size: BMap.Size }) => void
-  onHotspotclick?: (event: { type: string; target: any; spots: BMap.HotspotOptions }) => void
-  onHotspotover?: (event: { type: string; target: any; spots: BMap.HotspotOptions }) => void
-  onHotspotout?: (event: { type: string; target: any; spots: BMap.HotspotOptions }) => void
-  onTilesloaded?: (event: { type: string; target: any }) => void
-  onTouchstart?: (event: { type: string; target: any; point: BMap.Point; pixel: BMap.Pixel }) => void
-  onTouchmove?: (event: { type: string; target: any; point: BMap.Point; pixel: BMap.Pixel }) => void
-  onTouchend?: (event: { type: string; target: any; point: BMap.Point; pixel: BMap.Pixel }) => void
-  onLongpress?: (event: { type: string; target: any; point: BMap.Point; pixel: BMap.Pixel }) => void
+  onHotspotClick?: (event: { type: string; target: any; spots: BMap.HotspotOptions }) => void
+  onHotspotOver?: (event: { type: string; target: any; spots: BMap.HotspotOptions }) => void
+  onHotspotOut?: (event: { type: string; target: any; spots: BMap.HotspotOptions }) => void
+  onTilesLoaded?: (event: { type: string; target: any }) => void
+  onTouchStart?: (event: { type: string; target: any; point: BMap.Point; pixel: BMap.Pixel }) => void
+  onTouchMove?: (event: { type: string; target: any; point: BMap.Point; pixel: BMap.Pixel }) => void
+  onTouchEnd?: (event: { type: string; target: any; point: BMap.Point; pixel: BMap.Pixel }) => void
+  onLongPress?: (event: { type: string; target: any; point: BMap.Point; pixel: BMap.Pixel }) => void
 
   // Custom events
   /** 缩放级别变动. 和zoom配合实现受控模式  */
   onZoomChange?: (zoom: number) => void
   /** 中心点变动. 和center配合实现受控模式. 可以使用centerChangeDelay设置debounce延迟  */
   onCenterChange?: (center: BMap.Point) => void
-
-  // static properties
-  /** 是否启用使用高分辨率地图。在iPhone4及其后续设备上，可以通过开启此选项获取更高分辨率的底图，v1.2,v1.3版本默认不开启，v1.4默认为开启状态 */
-  enableHighResolution?: boolean
-  /** 是否开启底图可点功能，默认启用 */
-  enableMapClick?: boolean
 }
 
 export interface BDMapContextValue {
@@ -186,38 +186,38 @@ const BDMAP_SETTABLE_PROPERTIES = [
 
 const BDMAP_EVENTS = [
   'click',
-  'dblclick',
-  'rightclick',
-  'rightdblclick',
-  'maptypechange',
-  'mousemove',
-  'mouseover',
-  'mouseout',
-  'movestart',
+  'dbl_click',
+  'right_click',
+  'right_dbl_click',
+  'map_type_change',
+  'mouse_move',
+  'mouse_over',
+  'mouse_out',
+  'move_start',
   'moving',
-  'moveend',
-  'zoomstart',
-  'zoomend',
-  'addoverlay',
-  'addcontrol',
-  'removecontrol',
-  'removeoverlay',
-  'clearoverlays',
-  'dragstart',
+  'move_end',
+  'zoom_start',
+  'zoom_end',
+  'add_overlay',
+  'add_control',
+  'remove_control',
+  'remove_overlay',
+  'clear_overlays',
+  'drag_start',
   'dragging',
-  'dragend',
-  'addtilelayer',
-  'removetilelayer',
+  'drag_end',
+  'add_tile_layer',
+  'remove_tile_layer',
   'load',
   'resize',
-  'hotspotclick',
-  'hotspotover',
-  'hotspotout',
-  'tilesloaded',
-  'touchstart',
-  'touchmove',
-  'touchend',
-  'longpress',
+  'hotspot_click',
+  'hotspot_over',
+  'hotspot_out',
+  'tiles_loaded',
+  'touch_start',
+  'touch_move',
+  'touch_end',
+  'long_press',
 ]
 
 export const BDMapContext = React.createContext<BDMapContextValue>({})

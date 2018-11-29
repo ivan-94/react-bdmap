@@ -102,13 +102,17 @@ const getBDEventHandleName = memoize((event: string) => {
   return `on${event.split('_').join('')}`
 })
 
+const abbrMap = {
+  dbl: 'double',
+}
+
 /**
- * 转换foo_bar 为 FooBar
+ * 转换foo_bar 为 FooBar, 并将转换一些简写，如dbl -> double
  */
 const getPropsEventHandleName = memoize((event: string) => {
   return event
     .split('_')
-    .map(upperFirst)
+    .map(word => upperFirst(word in abbrMap ? abbrMap[word] : word))
     .join('')
 })
 

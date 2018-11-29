@@ -27,6 +27,44 @@ function App() {
 ReactDOM.render(<App />, document.getElementById('root'))
 ```
 
+### 事件
+
+BDMap 的所有事件绑定都采用 React 的事件规范，如`onclick` 对应的为`onClick`, `ondblclick`对应的为`onDoubleClick`. 具体组件的 API 文档
+
+```
+class Example extends React.Component {
+  constructor(props) {
+    super(props)
+    this.state = {
+      center: new BMap.Point(116.404449, 39.914889),
+      zoom: 12,
+    }
+  }
+
+  render() {
+    return (
+      <>
+        <BDMap
+          style={{ height: 450 }}
+          zoom={this.state.zoom}
+          center={this.state.center}
+          enableScrollWheelZoom
+          onClick={logger('onClick')}
+          onDoubleClick={logger('onDoubleClick')}
+          onRightDoubleClick={logger('onRightDoubleClick')}
+        />
+      </>
+    )
+  }
+}
+
+;<BDMapWrapper>
+  <Example />
+</BDMapWrapper>
+```
+
+### 受控模式
+
 zoom 和 center 可以支持受控模式
 
 ```jsx
