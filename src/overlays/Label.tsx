@@ -15,27 +15,18 @@ export interface LabelProps {
   enableMassClear?: boolean
 
   onClick: (event: { type: string; target: any }) => void
-  onDblclick: (event: { type: string; target: any }) => void
-  onMousedown: (event: { type: string; target: any }) => void
-  onMouseup: (event: { type: string; target: any }) => void
-  onMouseout: (event: { type: string; target: any }) => void
-  onMouseover: (event: { type: string; target: any }) => void
+  onDoubleClick: (event: { type: string; target: any }) => void
+  onMouseDown: (event: { type: string; target: any }) => void
+  onMouseUp: (event: { type: string; target: any }) => void
+  onMouseOut: (event: { type: string; target: any }) => void
+  onMouseOver: (event: { type: string; target: any }) => void
   onRemove: (event: { type: string; target: any }) => void
-  onRightclick: (event: { type: string; target: any }) => void
+  onRightClick: (event: { type: string; target: any }) => void
 }
 
 const PROPERTIES = ['position', 'style', 'content', 'offset', 'title', 'zIndex']
 const ENABLEABLE_PROPERTIES = ['massClear']
-const EVENTS = [
-  'click',
-  'dblclick',
-  'mousedown',
-  'mouseup',
-  'mouseout',
-  'mouseover',
-  'remove',
-  'rightclick',
-]
+const EVENTS = ['click', 'dbl_click', 'mouse_down', 'mouse_up', 'mouse_out', 'mouse_over', 'remove', 'right_click']
 
 export default class Label extends Overlay<LabelProps> {
   public static defaultProps: Partial<LabelProps> = {
