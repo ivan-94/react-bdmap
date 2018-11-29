@@ -1,6 +1,3 @@
-/**
- * TODO: redraw
- */
 import React from 'react'
 import ReactDOM from 'react-dom'
 import { BDMapContext } from '../BDMap'
@@ -92,6 +89,8 @@ export default class InfoWindow extends React.PureComponent<InfoWindowProps> {
 
   private elm = document.createElement('div')
   private titleElm = document.createElement('div')
+  private elmObserver: MutationObserver
+  private titleEleObserver: MutationObserver
   private instance: BMap.InfoWindow
   private opened: boolean = false
   protected extendedProperties: string[] = []
@@ -99,7 +98,7 @@ export default class InfoWindow extends React.PureComponent<InfoWindowProps> {
   protected extendedEvents: string[] = []
 
   public componentDidMount() {
-    const { maxWidth, offset, message, enableMessage, position, open, enableAutoPan } = this.props
+    const { maxWidth, offset, message, enableMessage, position, open } = this.props
     if (position == null) {
       throw new TypeError('InfoWindow: position is required')
     }
@@ -119,6 +118,7 @@ export default class InfoWindow extends React.PureComponent<InfoWindowProps> {
     this.instance.setTitle(this.titleElm)
     this.initialProperties()
     this.setVisible(open)
+    this.watchDOMchange()
   }
 
   public componentDidUpdate(prevProps: InfoWindowProps) {
@@ -135,6 +135,12 @@ export default class InfoWindow extends React.PureComponent<InfoWindowProps> {
   public componentWillUnmount() {
     // TODO: 目前baidu文档上没有看到任何关于销毁InfoWindow的方法
     this.setVisible(false)
+    if (this.elmObserver) {
+      this.elmObserver.disconnect()
+    }
+    if (this.titleEleObserver) {
+      this.titleEleObserver.disconnect()
+    }
   }
 
   public render() {
@@ -144,6 +150,13 @@ export default class InfoWindow extends React.PureComponent<InfoWindowProps> {
         {ReactDOM.createPortal(this.props.title, this.titleElm)}
       </>
     )
+  }
+
+  /**
+   * 重绘信息窗口，当信息窗口内容发生变化时进行调用
+   */
+  public redraw() {
+    this.instance.redraw()
   }
 
   protected initialProperties() {
@@ -181,6 +194,22 @@ export default class InfoWindow extends React.PureComponent<InfoWindowProps> {
       this.props.onChange(false)
     }
   })
+
+  /**
+   * 监听DOM变化，然后执行redraw
+   */
+  private watchDOMchange() {
+    // @ts-ignore
+    if (!window.MutationObserver) {
+      return
+    }
+
+    const observeOptions = { attributes: true, childList: true, characterData: true, subtree: true }
+    this.elmObserver = new MutationObserver(() => this.redraw())
+    this.titleEleObserver = new MutationObserver(() => this.redraw())
+    this.elmObserver.observe(this.elm, observeOptions)
+    this.titleEleObserver.observe(this.titleElm, observeOptions)
+  }
 
   private setVisible(show?: boolean) {
     const { position } = this.props
