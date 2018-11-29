@@ -155,7 +155,7 @@ export interface BDMapContextValue {
 }
 
 interface State {
-  error?: Error
+  ready?: boolean
   context: BDMapContextValue
 }
 
@@ -239,6 +239,7 @@ export default class BDMap extends React.Component<BDMapProps, State> {
       nativeInstance: undefined,
       container: this,
     },
+    ready: false,
   }
   private el = React.createRef<HTMLDivElement>()
   private map: BMap.Map
@@ -269,7 +270,7 @@ export default class BDMap extends React.Component<BDMapProps, State> {
     return (
       <BDMapContext.Provider value={context}>
         <div className={`bdmap ${className || ''}`} ref={this.el} style={style}>
-          {!!context.nativeInstance && children}
+          {this.state.ready && !!context.nativeInstance && children}
         </div>
       </BDMapContext.Provider>
     )
@@ -417,7 +418,7 @@ export default class BDMap extends React.Component<BDMapProps, State> {
     })
   }
 
-  protected handleZoomend = override('onZoomend', (evt: any) => {
+  protected handleZoomEnd = override('onZoomEnd', (evt: any) => {
     if (this.props.onZoomChange) {
       this.props.onZoomChange(this.map.getZoom())
     }
@@ -427,10 +428,14 @@ export default class BDMap extends React.Component<BDMapProps, State> {
     }
   })
 
-  protected handleMoveend = override('onMoveend', () => {
+  protected handleMoveEnd = override('onMoveEnd', () => {
     if (this.props.onCenterChange) {
       this.triggerCenterChange()
     }
+  })
+
+  protected handleLoad = override('onLoad', () => {
+    this.setState({ ready: true })
   })
 
   private triggerCenterChange = debounce(() => {
