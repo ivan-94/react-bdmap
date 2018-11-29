@@ -53,7 +53,7 @@ export function override<T extends Function>(name: string, callback: T) {
 }
 
 export function hasEquals(a: any) {
-  return typeof a === 'object' && 'equals' in a
+  return a != null && typeof a === 'object' && 'equals' in a
 }
 
 export function baiduEquals(a: any, b: any) {
