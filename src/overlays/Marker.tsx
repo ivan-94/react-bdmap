@@ -2,6 +2,7 @@
  * 表示地图上一个图像标注
  */
 import Overlay from './Overlay'
+import { override } from '../utils'
 
 export interface MarkerProps {
   position: BMap.Point
@@ -28,47 +29,36 @@ export interface MarkerProps {
 
   // events
   onClick: (event: { type: string; target: any }) => void
-  onDblclick: (event: { type: string; target: any; point: BMap.Point; pixel: BMap.Pixel }) => void
-  onMousedown: (event: { type: string; target: any; point: BMap.Point; pixel: BMap.Pixel }) => void
-  onMouseup: (event: { type: string; target: any; point: BMap.Point; pixel: BMap.Pixel }) => void
-  onMouseout: (event: { type: string; target: any; point: BMap.Point; pixel: BMap.Pixel }) => void
-  onMouseover: (event: { type: string; target: any; point: BMap.Point; pixel: BMap.Pixel }) => void
+  onDoubleClick: (event: { type: string; target: any; point: BMap.Point; pixel: BMap.Pixel }) => void
+  onMouseDown: (event: { type: string; target: any; point: BMap.Point; pixel: BMap.Pixel }) => void
+  onMouseUp: (event: { type: string; target: any; point: BMap.Point; pixel: BMap.Pixel }) => void
+  onMouseOut: (event: { type: string; target: any; point: BMap.Point; pixel: BMap.Pixel }) => void
+  onMouseOver: (event: { type: string; target: any; point: BMap.Point; pixel: BMap.Pixel }) => void
   onRemove: (event: { type: string; target: any }) => void
-  onInfowindowclose: (event: { type: string; target: any }) => void
-  onInfowindowopen: (event: { type: string; target: any }) => void
-  onDragstart: (event: { type: string; target: any }) => void
+  onInfoWindowClose: (event: { type: string; target: any }) => void
+  onInfoWindowOpen: (event: { type: string; target: any }) => void
+  onDragStart: (event: { type: string; target: any }) => void
   onDragging: (event: { type: string; target: any; point: BMap.Point; pixel: BMap.Pixel }) => void
-  onDragend: (event: { type: string; target: any; point: BMap.Point; pixel: BMap.Pixel }) => void
-  onRightclick: (event: { type: string; target: any }) => void
+  onDragEnd: (event: { type: string; target: any; point: BMap.Point; pixel: BMap.Pixel }) => void
+  onRightClick: (event: { type: string; target: any }) => void
 }
 
-const PROPERTIES = [
-  'position',
-  'icon',
-  'shadow',
-  'offset',
-  'title',
-  'top',
-  'label',
-  'zIndex',
-  'animation',
-  'rotation',
-]
+const PROPERTIES = ['position', 'icon', 'shadow', 'offset', 'title', 'top', 'label', 'zIndex', 'animation', 'rotation']
 const ENABLEABLE_PROPERTIES = ['dragging', 'massClear']
 const EVENTS = [
   'click',
-  'dblclick',
-  'mousedown',
-  'mouseup',
-  'mouseout',
-  'mouseover',
+  'dbl_click',
+  'mouse_down',
+  'mouse_up',
+  'mouse_out',
+  'mouse_over',
   'remove',
-  'infowindowclose',
-  'infowindowopen',
-  'dragstart',
+  'info_window_close',
+  'info_window_open',
+  'drag_start',
   'dragging',
-  'dragend',
-  'rightclick',
+  'drag_end',
+  'right_click',
 ]
 
 export default class Marker extends Overlay<MarkerProps> {
@@ -91,16 +81,13 @@ export default class Marker extends Overlay<MarkerProps> {
     })
   }
 
-  protected handleDragend = (evt: any) => {
+  protected handleDragEnd = override('onDragEnd', (evt: any) => {
     const newPosition = (this.instance as BMap.Marker).getPosition()
-    if (this.props.onDragend) {
-      this.props.onDragend(evt)
-    }
 
     if (this.props.onChange) {
       this.props.onChange(newPosition)
     }
-  }
+  })
 
   protected getPosition() {
     return this.props.position
