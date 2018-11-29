@@ -82,6 +82,16 @@ module.exports = {
   editorConfig: {
     theme: 'monokai',
   },
+  template: {
+    head: {
+      links: [
+        {
+          rel: 'stylesheet',
+          href: 'https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.4.1/semantic.min.css',
+        },
+      ],
+    },
+  },
   theme: theme,
   styles: styles,
   exampleMode: 'expand',

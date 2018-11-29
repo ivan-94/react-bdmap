@@ -193,6 +193,12 @@ export default class InfoWindow extends React.PureComponent<InfoWindowProps> {
       if (!this.opened) {
         map.openInfoWindow(this.instance, position)
         this.opened = true
+        setTimeout(() => {
+          // 受控模式下，多个InfoWindow一起渲染，处理未实际打开
+          if (map.getInfoWindow() !== this.instance && this.props.open) {
+            this.instance.onclose({ type: 'onclose', target: this.instance, point: position })
+          }
+        }, 100)
       } else if (this.instance.getPosition().equals(position)) {
         // 位置没有变动
         if (!this.instance.isOpen()) {

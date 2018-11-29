@@ -21,7 +21,7 @@ class Map extends React.Component {
 const BDMapWrapper = (global.BDMapWrapper = class extends React.Component {
   public render() {
     return (
-      <div style={{ height: 500 }}>
+      <div style={{ minHeight: 500 }}>
         <BDMapLoader apiKey="1XWjAMBIusA3EL4G61lXS0AliZd0l7bF">{this.props.children}</BDMapLoader>
       </div>
     )
