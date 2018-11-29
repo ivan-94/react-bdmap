@@ -1,6 +1,3 @@
-/**
- * 表示地图上的圆覆盖物
- */
 import Overlay from './Overlay'
 
 export interface GroundOverlayProps {
@@ -18,17 +15,11 @@ export interface GroundOverlayProps {
   dispalyOnMaxLevel?: number
 
   onClick: (event: { type: string; target: any }) => void
-  onDblclick: (event: { type: string; target: any }) => void
+  onDoubleClick: (event: { type: string; target: any }) => void
 }
 
-const PROPERTIES = [
-  'bounds',
-  'imageURL',
-  'opacity',
-  'displayOnMinLevel',
-  'dispalyOnMaxLevel',
-]
-const EVENTS = ['click', 'dblclick']
+const PROPERTIES = ['bounds', 'imageURL', 'opacity', 'displayOnMinLevel', 'dispalyOnMaxLevel']
+const EVENTS = ['click', 'dbl_click']
 
 /**
  * 表示地图上的地面叠加层, 即在地图上叠加图片
