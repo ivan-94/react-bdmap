@@ -1,3 +1,6 @@
+/**
+ * TODO: redraw
+ */
 import React from 'react'
 import ReactDOM from 'react-dom'
 import { BDMapContext } from '../BDMap'
@@ -8,6 +11,7 @@ import {
   updateEnableableProperties,
   initializeEvents,
   updateEvents,
+  override,
 } from '../utils'
 
 export interface InfoWindowProps {
@@ -67,12 +71,12 @@ export interface InfoWindowProps {
   onOpen?: (event: { type: string; target: any; point: BMap.Point }) => void
   onMaximize?: (event: { type: string; target: any }) => void
   onRestore?: (event: { type: string; target: any }) => void
-  onClickclose?: (event: { type: string; target: any }) => void
+  onClickClose?: (event: { type: string; target: any }) => void
 }
 
 const PROPERTIES = ['width', 'height']
 const ENABLEABLE_PROPERTIES = ['maximize', 'autoPan', 'closeOnClick']
-const EVENTS = ['close', 'open', 'maximize', 'restore', 'clickclose']
+const EVENTS = ['close', 'open', 'maximize', 'restore', 'click_close']
 
 /**
  * 表示地图上包含信息的窗口
@@ -159,35 +163,23 @@ export default class InfoWindow extends React.PureComponent<InfoWindowProps> {
     updateEvents(this.extendedEvents, this.instance, this.props, prevProps, this)
   }
 
-  protected handleOpen = (evt: any) => {
-    if (this.props.onOpen) {
-      this.props.onOpen(evt)
-    }
-
+  protected handleOpen = override('onOpen', (evt: any) => {
     if (this.props.onChange) {
       this.props.onChange(true)
     }
-  }
+  })
 
-  protected handleClose = (evt: any) => {
-    if (this.props.onClose) {
-      this.props.onClose(evt)
-    }
-
+  protected handleClose = override('onClose', (evt: any) => {
     if (this.props.onChange) {
       this.props.onChange(false)
     }
-  }
+  })
 
-  protected handleClickclose = (evt: any) => {
-    if (this.props.onClickclose) {
-      this.props.onClickclose(evt)
-    }
-
+  protected handleClickClose = override('onClickClose', (evt: any) => {
     if (this.props.onChange) {
       this.props.onChange(false)
     }
-  }
+  })
 
   private setVisible(show?: boolean) {
     const { position } = this.props
