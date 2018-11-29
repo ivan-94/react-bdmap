@@ -1,4 +1,4 @@
-除了使用defaultOpen控制默认打开状态, 还可以通过changeView()方法命令式控制
+除了使用 defaultOpen 控制默认打开状态, 还可以通过 changeView()方法命令式控制
 
 ```jsx
 class Example extends React.Component {
@@ -22,8 +22,8 @@ class Example extends React.Component {
           {this.state.show && (
             <OverviewMapControl
               defaultOpen
-              onViewchanged={logger('onViewchanged')}
-              onViewchanging={logger('onViewchanging')}
+              onViewChanged={logger('onViewChanged')}
+              onViewChanging={logger('onViewChanging')}
             />
           )}
         </BDMap>
