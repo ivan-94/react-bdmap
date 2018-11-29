@@ -12,41 +12,65 @@ import {
 
 export interface InfoWindowProps {
   /**
-   * 是否打开, 受控模式
+   * 是否打开, 支持受控模式
    */
   open?: boolean
   /**
-   * open变动，受控模式
+   * open变动，支持受控模式
    */
   onChange?: (open: boolean) => void
+
+  /** 当前位置, 显示传入或者作为其他覆盖物的下级，由上级覆盖物传入 */
+  position?: BMap.Point
+  /** 设置信息窗口的宽度，单位像素。取值范围：220 - 730 */
+  width?: number
+  /** 设置信息窗口的高度，单位像素。取值范围：60 - 650 */
+  height?: number
+  /** 设置信息窗口标题。支持HTML内容。1.2版本开始title参数支持传入DOM结点 */
+  title?: React.ReactNode
   /** 渲染消息窗的内容 */
   children: React.ReactNode
 
-  /** 当前位置, 显示传入或者作为其他覆盖物的下级，有上级覆盖传入 */
-  position?: BMap.Point
-  width?: number
-  height?: number
-  title?: string
-
+  /**
+   * 启用窗口最大化功能。需要设置最大化后信息窗口里的内容，该接口才生效
+   */
   enableMaximize?: boolean
+  /**
+   * 开启打开信息窗口时地图自动平移
+   */
   enableAutoPan?: boolean
+  /**
+   * 开启点击地图时关闭信息窗口
+   */
   enableCloseOnClick?: boolean
 
   // 固定参数
+  /** 是否在信息窗里显示短信发送按钮（默认开启） */
   enableMessage?: boolean
+  /**
+   * 信息窗最大化时的宽度，单位像素。取值范围：220 - 730
+   */
   maxWidth?: number
+  /**
+   * 信息窗位置偏移值。默认情况下在地图上打开的信息窗底端的尖角将指向其地理坐标，
+   * 在标注上打开的信息窗底端尖角的位置取决于标注所用图标的infoWindowOffset属性值，
+   * 您可以为信息窗添加偏移量来改变默认位置
+   */
   offset?: BMap.Size
+  /**
+   * 自定义部分的短信内容，可选项。完整的短信内容包括：自定义部分+位置链接，不设置时，显示默认短信内容。短信内容最长为140个字
+   */
   message?: string
 
   // 事件
-  onClose: (event: { type: string; target: any; point: BMap.Point }) => void
-  onOpen: (event: { type: string; target: any; point: BMap.Point }) => void
-  onMaximize: (event: { type: string; target: any }) => void
-  onRestore: (event: { type: string; target: any }) => void
-  onClickclose: (event: { type: string; target: any }) => void
+  onClose?: (event: { type: string; target: any; point: BMap.Point }) => void
+  onOpen?: (event: { type: string; target: any; point: BMap.Point }) => void
+  onMaximize?: (event: { type: string; target: any }) => void
+  onRestore?: (event: { type: string; target: any }) => void
+  onClickclose?: (event: { type: string; target: any }) => void
 }
 
-const PROPERTIES = ['width', 'height', 'title']
+const PROPERTIES = ['width', 'height']
 const ENABLEABLE_PROPERTIES = ['maximize', 'autoPan', 'closeOnClick']
 const EVENTS = ['close', 'open', 'maximize', 'restore', 'clickclose']
 
@@ -56,13 +80,14 @@ const EVENTS = ['close', 'open', 'maximize', 'restore', 'clickclose']
 export default class InfoWindow extends React.PureComponent<InfoWindowProps> {
   public static contextType = BDMapContext
   public context!: React.ContextType<typeof BDMapContext>
-  public static defaultProps: Partial<InfoWindowProps> = {
+  public static defaultProps = {
     enableMaximize: false,
     enableAutoPan: true,
     enableCloseOnClick: true,
   }
 
   private elm = document.createElement('div')
+  private titleElm = document.createElement('div')
   private instance: BMap.InfoWindow
   private opened: boolean = false
   protected extendedProperties: string[] = []
@@ -70,14 +95,7 @@ export default class InfoWindow extends React.PureComponent<InfoWindowProps> {
   protected extendedEvents: string[] = []
 
   public componentDidMount() {
-    const {
-      maxWidth,
-      offset,
-      message,
-      enableMessage,
-      position,
-      open,
-    } = this.props
+    const { maxWidth, offset, message, enableMessage, position, open } = this.props
     if (position == null) {
       throw new TypeError('InfoWindow: position is required')
     }
@@ -94,6 +112,7 @@ export default class InfoWindow extends React.PureComponent<InfoWindowProps> {
     })
 
     this.setVisible(open)
+    this.instance.setTitle(this.titleElm)
     this.initialProperties()
   }
 
@@ -114,21 +133,18 @@ export default class InfoWindow extends React.PureComponent<InfoWindowProps> {
   }
 
   public render() {
-    return ReactDOM.createPortal(this.props.children, this.elm)
+    return (
+      <>
+        {ReactDOM.createPortal(this.props.children, this.elm)}
+        {ReactDOM.createPortal(this.props.title, this.titleElm)}
+      </>
+    )
   }
 
   protected initialProperties() {
     // initial property
-    initializeSettableProperties(
-      this.extendedProperties,
-      this.instance,
-      this.props,
-    )
-    initializeEnableableProperties(
-      this.extendedEnableableProperties,
-      this.instance,
-      this.props,
-    )
+    initializeSettableProperties(this.extendedProperties, this.instance, this.props)
+    initializeEnableableProperties(this.extendedEnableableProperties, this.instance, this.props)
 
     // initial events
     initializeEvents(this.extendedEvents, this.instance, this.props, this)
@@ -136,27 +152,11 @@ export default class InfoWindow extends React.PureComponent<InfoWindowProps> {
 
   protected updateProperties(prevProps: InfoWindowProps) {
     // update properties
-    updateSettableProperties(
-      this.extendedProperties,
-      this.instance,
-      this.props,
-      prevProps,
-    )
-    updateEnableableProperties(
-      this.extendedEnableableProperties,
-      this.instance,
-      this.props,
-      prevProps,
-    )
+    updateSettableProperties(this.extendedProperties, this.instance, this.props, prevProps)
+    updateEnableableProperties(this.extendedEnableableProperties, this.instance, this.props, prevProps)
 
     // update Events
-    updateEvents(
-      this.extendedEvents,
-      this.instance,
-      this.props,
-      prevProps,
-      this,
-    )
+    updateEvents(this.extendedEvents, this.instance, this.props, prevProps, this)
   }
 
   protected handleOpen = (evt: any) => {
@@ -197,7 +197,8 @@ export default class InfoWindow extends React.PureComponent<InfoWindowProps> {
 
     if (show) {
       if (!this.opened) {
-        this.context.nativeInstance!.openInfoWindow(this.instance, position)
+        const map = this.context.nativeInstance!
+        map.openInfoWindow(this.instance, position)
         this.opened = true
         return
       }

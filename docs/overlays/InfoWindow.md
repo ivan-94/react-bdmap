@@ -20,6 +20,7 @@ class Example extends React.Component {
         <BDMap center={this.state.center} style={{ height: 450 }} zoom={15}>
           {this.state.visible && (
             <InfoWindow
+              title={<h2>title</h2>}
               open={this.state.show}
               onChange={show => this.setState({ show })}
               position={this.state.current}
@@ -40,7 +41,11 @@ class Example extends React.Component {
         <button onClick={() => this.setState({ visible: !this.state.visible })}>
           {this.state.visible ? 'destory' : 'create'}
         </button>
-        <button onClick={() => this.setState({ current: new BMap.Point(113.558855, 22.202845) })}>
+        <button
+          onClick={() =>
+            this.setState({ current: new BMap.Point(113.558855, 22.202845) })
+          }
+        >
           change position
         </button>
       </>
