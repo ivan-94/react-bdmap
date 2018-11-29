@@ -7,12 +7,12 @@ export interface PointCollectionProps {
   styles: BMap.PointCollectionOption
 
   onClick: (event: { type: string; target: any; point: BMap.Point }) => void
-  onMouseover: (event: { type: string; target: any; point: BMap.Point }) => void
-  onMouseout: (event: { type: string; target: any; point: BMap.Point }) => void
+  onMouseOver: (event: { type: string; target: any; point: BMap.Point }) => void
+  onMouseOut: (event: { type: string; target: any; point: BMap.Point }) => void
 }
 
 const PROPERTIES = ['points', 'styles']
-const EVENTS = ['click', 'mouseout', 'mouseover']
+const EVENTS = ['click', 'mouse_out', 'mouse_over']
 
 /**
  * 此类表示海量点类，利用该类可同时在地图上展示万级别的点，目前仅适用于html5浏览器.<br/><br/>
