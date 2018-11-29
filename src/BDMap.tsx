@@ -269,9 +269,8 @@ export default class BDMap extends React.Component<BDMapProps, State> {
     const { context } = this.state
     return (
       <BDMapContext.Provider value={context}>
-        <div className={`bdmap ${className || ''}`} ref={this.el} style={style}>
-          {this.state.ready && !!context.nativeInstance && children}
-        </div>
+        <div className={`bdmap ${className || ''}`} ref={this.el} style={style} />
+        {this.state.ready && !!context.nativeInstance && children}
       </BDMapContext.Provider>
     )
   }
@@ -394,6 +393,7 @@ export default class BDMap extends React.Component<BDMapProps, State> {
     // initialize events
     initializeEvents(BDMAP_EVENTS, this.map, this.props, this)
 
+    map.reset()
     // 我的家乡, Baidu地图必须在初始化时调用centerAndZoom
     const center = this.props.center || new BMap.Point(115.532177, 22.745408)
     map.centerAndZoom(center, this.props.zoom!)

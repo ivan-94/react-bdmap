@@ -17,7 +17,12 @@ class Example extends React.Component {
   render() {
     return (
       <>
-        <BDMap center={this.state.center} style={{ height: 450 }} zoom={15}>
+        <BDMap
+          center={this.state.center}
+          style={{ height: 450 }}
+          zoom={15}
+          enableScrollWheelZoom
+        >
           {this.state.visible && (
             <InfoWindow
               title={<h2>title</h2>}

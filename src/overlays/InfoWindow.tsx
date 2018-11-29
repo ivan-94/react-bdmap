@@ -75,7 +75,7 @@ export interface InfoWindowProps {
 }
 
 const PROPERTIES = ['width', 'height']
-const ENABLEABLE_PROPERTIES = ['maximize', 'autoPan', 'closeOnClick']
+const ENABLEABLE_PROPERTIES = ['maximize', 'closeOnClick']
 const EVENTS = ['close', 'open', 'maximize', 'restore', 'click_close']
 
 /**
@@ -99,7 +99,7 @@ export default class InfoWindow extends React.PureComponent<InfoWindowProps> {
   protected extendedEvents: string[] = []
 
   public componentDidMount() {
-    const { maxWidth, offset, message, enableMessage, position, open } = this.props
+    const { maxWidth, offset, message, enableMessage, position, open, enableAutoPan } = this.props
     if (position == null) {
       throw new TypeError('InfoWindow: position is required')
     }
@@ -113,11 +113,12 @@ export default class InfoWindow extends React.PureComponent<InfoWindowProps> {
       offset,
       message,
       enableMessage,
+      enableAutoPan: false,
     })
 
-    this.setVisible(open)
     this.instance.setTitle(this.titleElm)
     this.initialProperties()
+    this.setVisible(open)
   }
 
   public componentDidUpdate(prevProps: InfoWindowProps) {
@@ -188,25 +189,24 @@ export default class InfoWindow extends React.PureComponent<InfoWindowProps> {
     }
 
     if (show) {
+      const map = this.context.nativeInstance!
       if (!this.opened) {
-        const map = this.context.nativeInstance!
         map.openInfoWindow(this.instance, position)
         this.opened = true
-        return
-      }
-
-      // 位置没有变动
-      if (this.instance.getPosition().equals(position)) {
-        if (this.instance.isOpen()) {
-          return
+      } else if (this.instance.getPosition().equals(position)) {
+        // 位置没有变动
+        if (!this.instance.isOpen()) {
+          this.instance.show!()
         }
-
-        this.instance.show!()
-        return
+      } else {
+        // 更新到最新position
+        this.context.nativeInstance!.openInfoWindow(this.instance, position)
       }
 
-      // 更新到最新position
-      this.context.nativeInstance!.openInfoWindow(this.instance, position)
+      // 平移到目标位置
+      if (this.props.enableAutoPan) {
+        map.panTo(position)
+      }
     } else {
       if (this.opened) {
         this.instance.hide!()
