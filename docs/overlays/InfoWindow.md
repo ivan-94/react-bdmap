@@ -98,7 +98,7 @@ class Example extends React.Component {
 </BDMapWrapper>
 ```
 
-InfoWindow 可以作为其他 Overlay 直接子级, 复用它们的位置
+InfoWindow 可以作为其他 Overlay(确定 position 的 Overlay, 包括 Circle, CustomOverlay, Label, Marker) 直接子级, 复用它们的位置
 
 ```jsx
 class Example extends React.Component {
@@ -130,9 +130,15 @@ class Example extends React.Component {
             </InfoWindow>
           </Marker>
         </BDMap>
-        <button onClick={() => this.setState({ show: !this.state.show })}>
-          {this.state.show ? 'Hide' : 'Show'}
-        </button>
+
+        <div style={{ padding: 10 }}>
+          <button
+            className="ui button"
+            onClick={() => this.setState({ show: !this.state.show })}
+          >
+            {this.state.show ? 'Hide' : 'Show'}
+          </button>
+        </div>
       </>
     )
   }

@@ -73,6 +73,7 @@ const EVENTS = ['click', 'dbl_click', 'mouse_down', 'mouse_up', 'mouse_out', 'mo
 
 /**
  * 表示地图上的圆覆盖物
+ * @visibleName 圆 - Circle
  */
 export default class Circle extends Overlay<CircleProps> {
   public static defaultProps = {

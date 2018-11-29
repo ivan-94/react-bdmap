@@ -77,6 +77,7 @@ const EVENTS = ['close', 'open', 'maximize', 'restore', 'click_close']
 
 /**
  * 表示地图上包含信息的窗口
+ * @visibleName 信息窗口 - InfoWindow
  */
 export default class InfoWindow extends React.PureComponent<InfoWindowProps> {
   public static contextType = BDMapContext
