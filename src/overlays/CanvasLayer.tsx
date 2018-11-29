@@ -1,6 +1,3 @@
-/**
- * 用于在地图上绘制自定义的canvas2D或WebGL图形
- */
 import Overlay, { PaneType } from './Overlay'
 
 export interface CanvasLayerProps {
@@ -19,6 +16,9 @@ export interface CanvasLayerProps {
   update: (canvas: HTMLCanvasElement, map: BMap.Map) => void
 }
 
+/**
+ * 用于在地图上绘制自定义的canvas2D或WebGL图形
+ */
 export default class CanvasLayer extends Overlay<CanvasLayerProps> {
   protected initialize = () => {
     const { zIndex, paneName, update } = this.props
