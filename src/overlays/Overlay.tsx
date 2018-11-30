@@ -66,16 +66,17 @@ export default abstract class Overlay<P> extends React.PureComponent<OverlayProp
   public render(): React.ReactNode {
     return (
       <>
-        {!!this.customRender && this.customRender()}
-        {!!this.instance &&
-          React.Children.map(this.props.children, child =>
-            React.isValidElement(child)
-              ? React.cloneElement(child as React.ReactElement<ChildrenInjectedProps>, {
-                  position: this.getPosition(),
-                  overlay: this.instance,
-                })
-              : child,
-          )}
+        {this.customRender
+          ? this.customRender()
+          : !!this.instance &&
+            React.Children.map(this.props.children, child =>
+              React.isValidElement(child)
+                ? React.cloneElement(child as React.ReactElement<ChildrenInjectedProps>, {
+                    position: this.getPosition(),
+                    overlay: this.instance,
+                  })
+                : child,
+            )}
       </>
     )
   }

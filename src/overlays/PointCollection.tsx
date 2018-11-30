@@ -18,6 +18,7 @@ const EVENTS = ['click', 'mouse_out', 'mouse_over']
  * 此类表示海量点类，利用该类可同时在地图上展示万级别的点，目前仅适用于html5浏览器.<br/><br/>
  *
  * Note: 渲染海量点会耗费一定性能，应该注意不要频繁变动point数组
+ * @visibleName 海量点 - PointCollection
  */
 export default class PointCollection extends Overlay<PointCollectionProps> {
   public constructor(props: PointCollectionProps) {

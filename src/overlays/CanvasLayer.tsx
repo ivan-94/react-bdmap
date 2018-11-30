@@ -18,6 +18,7 @@ export interface CanvasLayerProps {
 
 /**
  * 用于在地图上绘制自定义的canvas2D或WebGL图形
+ * @visibleName Canvas层 - CanvasLayer
  */
 export default class CanvasLayer extends Overlay<CanvasLayerProps> {
   protected initialize = () => {

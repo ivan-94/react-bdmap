@@ -1,15 +1,27 @@
-/**
- * 自定义覆盖物
- */
 import React from 'react'
 import ReactDOM from 'react-dom'
 import Overlay, { PaneType } from './Overlay'
 
 export interface CustomOverlayProps {
+  /**
+   * 设置标注的地理坐标. 这个坐标将作为自定义DOM元素的左上角, 可以通过offset或CSS translate设置偏移值
+   */
   position: BMap.Point
+  /**
+   * 设置标注的偏移值
+   */
   offset?: BMap.Size
+  /**
+   * 设置覆盖物的zIndex
+   */
   zIndex?: number
+  /**
+   * 自定义DOM元素
+   */
   children: React.ReactNode
+  /**
+   * 自定义覆盖物插入的容器
+   */
   pane?: PaneType
 }
 
@@ -67,6 +79,10 @@ export function getClass() {
 
 const PROPERTIES = ['position', 'offset', 'zIndex']
 
+/**
+ * 自定义覆盖物. 用于渲染自定义的DOM对象
+ * @visibleName 自定义覆盖物 - CustomOverlay
+ */
 export default class CustomOverlay extends Overlay<CustomOverlayProps> {
   private elm = document.createElement('div')
   public static CustomOverlayInner: ReturnType<typeof getClass>

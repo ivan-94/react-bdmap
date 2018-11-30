@@ -23,6 +23,7 @@ const EVENTS = ['click', 'dbl_click']
 
 /**
  * 表示地图上的地面叠加层, 即在地图上叠加图片
+ * @visibleName 地面叠加层 - GroundOverlay
  */
 export default class GroundOverlay extends Overlay<GroundOverlayProps> {
   public constructor(props: GroundOverlayProps) {
