@@ -53,7 +53,7 @@ export default class Label extends Overlay<LabelProps> {
     })
   }
 
-  protected getPosition() {
+  protected getPosition = () => {
     return this.props.position
   }
 }

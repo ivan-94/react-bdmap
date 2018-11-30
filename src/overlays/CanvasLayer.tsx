@@ -35,7 +35,7 @@ export default class CanvasLayer extends Overlay<CanvasLayerProps> {
     })
   }
 
-  protected getPosition() {
+  protected getPosition = () => {
     return undefined
   }
 }

@@ -32,7 +32,7 @@ module.exports.styles = {
 }
 
 module.exports.theme = {
-  sidebarWidth: 250,
+  sidebarWidth: 263,
   fontSize: {
     base: 15,
     h1: 33,

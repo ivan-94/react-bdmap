@@ -78,10 +78,6 @@ export default class Polyline extends Overlay<PolylineProps> {
     return (this.instance as BMap.Polyline).getBounds()
   }
 
-  protected getPosition() {
-    return this.props.path && this.props.path[0]
-  }
-
   protected handleLineUpdate = override('onLineUpdate', (evt: any) => {
     if (this.props.onChange) {
       const path = (this.instance as BMap.Polyline).getPath()

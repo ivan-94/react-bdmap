@@ -28,6 +28,11 @@ export interface ChildrenInjectedProps {
   overlay?: BMap.Overlay
 }
 
+/**
+ * Overlay 是一个抽象类, 是所有覆盖物的父类. 负责管理覆盖物的生命周期, 初始化和更新属性/事件. 如果要实现更高级的自定义覆盖物
+ * 可以继承该类.
+ * @visibleName Overlay
+ */
 export default abstract class Overlay<P> extends React.PureComponent<OverlayProps & P> {
   public static contextType = BDMapContext
   public context!: React.ContextType<typeof BDMapContext>
@@ -40,6 +45,7 @@ export default abstract class Overlay<P> extends React.PureComponent<OverlayProp
   protected extendedEvents: string[] = []
   protected initialize?: () => void
   protected customRender?: () => React.ReactNode
+  protected getPosition?: () => BMap.Point | undefined
 
   public componentDidMount() {
     if (this.initialize) {
@@ -72,7 +78,7 @@ export default abstract class Overlay<P> extends React.PureComponent<OverlayProp
             React.Children.map(this.props.children, child =>
               React.isValidElement(child)
                 ? React.cloneElement(child as React.ReactElement<ChildrenInjectedProps>, {
-                    position: this.getPosition(),
+                    position: this.getPosition && this.getPosition(),
                     overlay: this.instance,
                   })
                 : child,
@@ -84,9 +90,6 @@ export default abstract class Overlay<P> extends React.PureComponent<OverlayProp
   public getInstance() {
     return this.instance
   }
-
-  // 获取当前位置
-  protected abstract getPosition(): BMap.Point | undefined
 
   protected initialProperties() {
     // initial property

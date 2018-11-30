@@ -100,7 +100,7 @@ export default class CustomOverlay extends Overlay<CustomOverlayProps> {
     return ReactDOM.createPortal(this.props.children, this.elm)
   }
 
-  protected getPosition() {
+  protected getPosition = () => {
     return this.props.position
   }
 }

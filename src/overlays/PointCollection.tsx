@@ -29,8 +29,4 @@ export default class PointCollection extends Overlay<PointCollectionProps> {
 
     this.instance = new BMap.PointCollection(points)
   }
-
-  protected getPosition() {
-    return undefined
-  }
 }

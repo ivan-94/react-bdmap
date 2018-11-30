@@ -95,7 +95,7 @@ export default class Circle extends Overlay<CircleProps> {
     return (this.instance as BMap.Circle).getBounds()
   }
 
-  protected getPosition() {
+  protected getPosition = () => {
     return this.props.center
   }
 }

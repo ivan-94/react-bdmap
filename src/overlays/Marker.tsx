@@ -112,7 +112,7 @@ export default class Marker extends Overlay<MarkerProps> {
     }
   })
 
-  protected getPosition() {
+  protected getPosition = () => {
     return this.props.position
   }
 }

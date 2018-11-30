@@ -33,8 +33,4 @@ export default class GroundOverlay extends Overlay<GroundOverlayProps> {
     const { bounds } = this.props
     this.instance = new BMap.GroundOverlay(bounds)
   }
-
-  protected getPosition() {
-    return undefined
-  }
 }
