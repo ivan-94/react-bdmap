@@ -102,6 +102,7 @@ module.exports = {
   propsParser: require('react-docgen-typescript').withCustomConfig('./tsconfig.json', []).parse,
   styleguideComponents: {
     LogoRenderer: path.join(__dirname, 'rsg-components/Logo'),
+    ReactComponentRenderer: path.join(__dirname, 'rsg-components/ReactComponent'),
   },
   webpackConfig: {
     resolve: {
