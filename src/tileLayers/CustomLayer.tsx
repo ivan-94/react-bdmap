@@ -16,7 +16,7 @@ export interface CustomLayerProps {
   /** 麻点密度常量 */
   pointDensityType?: BMap.PointDensityType
   /** 点击热区触发，content即为lbs云详情检索的所有字段，参考http://developer.baidu.com/map/lbs-geosearch.htm#.search.detail */
-  onHotspotClick: (event: { type: string; target: any; content: any }) => void
+  onHotspotClick?: (event: { type: string; target: any; content: any }) => void
 }
 
 const PROPS_TO_OMIT = ['onHotspot_click']

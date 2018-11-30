@@ -6,9 +6,9 @@ export interface PointCollectionProps {
   /** 点的样式，包括:大小"size"（可选,默认正常尺寸10*10px，SizeType类型），形状"shape"（可选，默认圆形，ShapeType类型），颜色"color"（可选，字符串类型） */
   styles: BMap.PointCollectionOption
 
-  onClick: (event: { type: string; target: any; point: BMap.Point }) => void
-  onMouseOver: (event: { type: string; target: any; point: BMap.Point }) => void
-  onMouseOut: (event: { type: string; target: any; point: BMap.Point }) => void
+  onClick?: (event: { type: string; target: any; point: BMap.Point }) => void
+  onMouseOver?: (event: { type: string; target: any; point: BMap.Point }) => void
+  onMouseOut?: (event: { type: string; target: any; point: BMap.Point }) => void
 }
 
 const PROPERTIES = ['points', 'styles']

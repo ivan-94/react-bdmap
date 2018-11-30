@@ -14,8 +14,8 @@ export interface GroundOverlayProps {
   /** 设置图层显示的最大级别 */
   dispalyOnMaxLevel?: number
 
-  onClick: (event: { type: string; target: any }) => void
-  onDoubleClick: (event: { type: string; target: any }) => void
+  onClick?: (event: { type: string; target: any }) => void
+  onDoubleClick?: (event: { type: string; target: any }) => void
 }
 
 const PROPERTIES = ['bounds', 'imageURL', 'opacity', 'displayOnMinLevel', 'dispalyOnMaxLevel']

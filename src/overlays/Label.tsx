@@ -18,14 +18,14 @@ export interface LabelProps {
   /** 允许覆盖物在map.clearOverlays方法中被清除 */
   enableMassClear?: boolean
 
-  onClick: (event: { type: string; target: any }) => void
-  onDoubleClick: (event: { type: string; target: any }) => void
-  onMouseDown: (event: { type: string; target: any }) => void
-  onMouseUp: (event: { type: string; target: any }) => void
-  onMouseOut: (event: { type: string; target: any }) => void
-  onMouseOver: (event: { type: string; target: any }) => void
-  onRemove: (event: { type: string; target: any }) => void
-  onRightClick: (event: { type: string; target: any }) => void
+  onClick?: (event: { type: string; target: any }) => void
+  onDoubleClick?: (event: { type: string; target: any }) => void
+  onMouseDown?: (event: { type: string; target: any }) => void
+  onMouseUp?: (event: { type: string; target: any }) => void
+  onMouseOut?: (event: { type: string; target: any }) => void
+  onMouseOver?: (event: { type: string; target: any }) => void
+  onRemove?: (event: { type: string; target: any }) => void
+  onRightClick?: (event: { type: string; target: any }) => void
 }
 
 const PROPERTIES = ['position', 'style', 'content', 'offset', 'title', 'zIndex']
@@ -37,7 +37,7 @@ const EVENTS = ['click', 'dbl_click', 'mouse_down', 'mouse_up', 'mouse_out', 'mo
  * @visibleName 标签 - Label
  */
 export default class Label extends Overlay<LabelProps> {
-  public static defaultProps: Partial<LabelProps> = {
+  public static defaultProps = {
     enableMassClear: true,
   }
 

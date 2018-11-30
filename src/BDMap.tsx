@@ -226,7 +226,7 @@ export const BDMapContext = React.createContext<BDMapContextValue>({})
  * 这是Baidu地图的核心组件, 表示一个地图实例. 所有控件, 覆盖物, 图层都是在这个上下文中进行渲染
  */
 export default class BDMap extends React.Component<BDMapProps, State> {
-  public static defaultProps: Partial<BDMapProps> = {
+  public static defaultProps = {
     enableDragging: true,
     enableDoubleClickZoom: true,
     enablePinchToZoom: true,

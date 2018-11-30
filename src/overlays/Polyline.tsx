@@ -16,14 +16,14 @@ export interface PolylineProps {
 
   enableClicking?: boolean
 
-  onClick: (event: { type: string; target: any }) => void
-  onDoubleClick: (event: { type: string; target: any; point: BMap.Point; pixel: BMap.Pixel }) => void
-  onMouseDown: (event: { type: string; target: any; point: BMap.Point; pixel: BMap.Pixel }) => void
-  onMouseUp: (event: { type: string; target: any; point: BMap.Point; pixel: BMap.Pixel }) => void
-  onMouseOut: (event: { type: string; target: any; point: BMap.Point; pixel: BMap.Pixel }) => void
-  onMouseOver: (event: { type: string; target: any; point: BMap.Point; pixel: BMap.Pixel }) => void
-  onRemove: (event: { type: string; target: any }) => void
-  onLineUpdate: (event: { type: string; target: any }) => void
+  onClick?: (event: { type: string; target: any }) => void
+  onDoubleClick?: (event: { type: string; target: any; point: BMap.Point; pixel: BMap.Pixel }) => void
+  onMouseDown?: (event: { type: string; target: any; point: BMap.Point; pixel: BMap.Pixel }) => void
+  onMouseUp?: (event: { type: string; target: any; point: BMap.Point; pixel: BMap.Pixel }) => void
+  onMouseOut?: (event: { type: string; target: any; point: BMap.Point; pixel: BMap.Pixel }) => void
+  onMouseOver?: (event: { type: string; target: any; point: BMap.Point; pixel: BMap.Pixel }) => void
+  onRemove?: (event: { type: string; target: any }) => void
+  onLineUpdate?: (event: { type: string; target: any }) => void
 }
 
 const PROPERTIES = ['path', 'strokeColor', 'strokeOpacity', 'strokeWeight', 'strokeStyle']
@@ -31,7 +31,7 @@ const ENABLEABLE_PROPERTIES = ['editing', 'massClear']
 const EVENTS = ['click', 'dbl_click', 'mouse_down', 'mouse_up', 'mouse_out', 'mouse_over', 'remove', 'line_update']
 
 export default class Polyline extends Overlay<PolylineProps> {
-  public static defaultProps: Partial<PolylineProps> = {
+  public static defaultProps = {
     enableEditing: false,
     enableMassClear: true,
   }
