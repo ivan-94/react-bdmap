@@ -28,9 +28,51 @@ test('method override', () => {
 })
 
 /**
+ * import script
+ */
+describe('load dependency by importScript', async () => {
+  it('should inject to head', () => {
+    utils.importScript('foo')
+    const script = document.head!.lastElementChild!
+    expect(script.nodeName).toBe('SCRIPT')
+    expect(script.getAttribute('src')).toBe('foo')
+  })
+
+  it('should resolve on loaded', () => {
+    const promise = utils.importScript('bar')
+    const script = document.head!.lastElementChild!
+    const onload = script['onload']
+    expect(onload).toBeDefined()
+    onload()
+    return expect(promise).resolves.toBe(undefined)
+  })
+
+  it('should reject on error', async () => {
+    let promise = utils.importScript('bar')
+    const script = document.head!.lastElementChild!
+    const onerror = script['onerror']
+    expect(onerror).toBeDefined()
+    setTimeout(() => {
+      onerror()
+    })
+    expect(promise).rejects.toThrow('The Script bar is no accessible.')
+  })
+})
+
+/**
  * settable 属性
  */
 describe('settable properties', () => {
+  const MockPoint = class {
+    constructor(private a: number, private b: number) {}
+    equals(point: any) {
+      if (point == null) {
+        return false
+      }
+      return this.a == point.a && this.b == point.b
+    }
+  }
+
   describe('Baidu Map object has equals', () => {
     test.each`
       input                   | expected
@@ -46,16 +88,6 @@ describe('settable properties', () => {
   })
 
   describe('settable property equals', () => {
-    const MockPoint = class {
-      constructor(private a: number, private b: number) {}
-      equals(point: any) {
-        if (point == null) {
-          return false
-        }
-        return this.a == point.a && this.b == point.b
-      }
-    }
-
     test.each`
       val1                                                  | val2                                                  | expected
       ${1}                                                  | ${1}                                                  | ${true}
@@ -87,6 +119,29 @@ describe('settable properties', () => {
     expect(instance.setBaz).not.toBeCalled()
     expect(instance.setBazz).not.toBeCalled()
   })
+
+  test('updateSettableProperties', () => {
+    const properties = ['foo', 'bar', 'baz']
+    const instance = {
+      setFoo: jest.fn(),
+      setBar: jest.fn(),
+      setBaz: jest.fn(),
+    }
+    const props = {
+      foo: 1,
+      bar: new MockPoint(1, 2),
+      baz: [new MockPoint(1, 2), new MockPoint(2, 3)],
+    }
+    const nextProps = {
+      foo: 2,
+      bar: new MockPoint(1, 2),
+      baz: [new MockPoint(1, 2), new MockPoint(2, 3)],
+    }
+    utils.updateSettableProperties(properties, instance, nextProps, props)
+    expect(instance.setFoo).toBeCalledWith(2)
+    expect(instance.setBar).not.toBeCalled()
+    expect(instance.setBaz).not.toBeCalled()
+  })
 })
 
 /**
@@ -112,6 +167,24 @@ describe('enableable properties', () => {
     expect(instance.disableBar).toBeCalled()
     expect(instance.enableBaz).not.toBeCalled()
     expect(instance.disableBaz).not.toBeCalled()
+  })
+
+  test('updateEnableableProperties', () => {
+    const properties = ['foo']
+    const instance = {
+      enableFoo: jest.fn(),
+      disableFoo: jest.fn(),
+    }
+    const props = {
+      enableFoo: true,
+    }
+    utils.initializeEnableableProperties(properties, instance, props)
+    expect(instance.enableFoo).toBeCalled()
+    const nextProps = {
+      enableFoo: false,
+    }
+    utils.updateEnableableProperties(properties, instance, nextProps, props)
+    expect(instance.disableFoo).toBeCalled()
   })
 })
 
@@ -163,7 +236,6 @@ describe('events', () => {
 
     const overrideByContext = events.slice(0, 2)
     const noOverrided = events.slice(2)
-    console.log(overrideByContext)
     overrideByContext.forEach(event => {
       const eventName = utils.getBDEventHandleName(event)
       expect(instance).toHaveProperty(eventName)
@@ -180,5 +252,21 @@ describe('events', () => {
         props[`on${utils.getPropsEventHandleName(event)}`],
       )
     })
+  })
+
+  test('update events', () => {
+    const instance = {}
+    const props = {
+      onFooBar: () => {},
+    }
+    utils.initializeEvents(events, instance, props)
+    expect(instance['onfoobar']).toBe(props.onFooBar)
+
+    const nextProps = {
+      ...props,
+      onFooBar: undefined,
+    }
+    utils.updateEvents(events, instance, nextProps, props)
+    expect(instance['onfoobar']).toBeUndefined()
   })
 })
