@@ -22,7 +22,7 @@ export interface MapTypeControlProps extends ControlProps {
 
 /**
  * 表示负责切换地图类型的控件，默认位于地图右上方
- * @visibleName 地图类型控件
+ * @visibleName 地图类型控件 - MapTypeControl
  */
 export default class MapTypeControl extends Control<MapTypeControlProps> {
   public constructor(props: any) {

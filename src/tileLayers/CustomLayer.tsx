@@ -23,6 +23,7 @@ const PROPS_TO_OMIT = ['onHotspot_click']
 
 /**
  * 用户自定义底图层，现阶段主要为LBS云麻点功能展现服务。
+ * @visibleName 自定义图层 - CustomLayer
  */
 export default class CustomLayer extends TileLayer<CustomLayerProps> {
   public constructor(props: CustomLayerProps) {

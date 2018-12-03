@@ -16,7 +16,7 @@ const CONTROL_EVENTS = ['view_changed', 'view_changing']
 
 /**
  * 表示缩略地图控件. 默认位于地图右下方，是一个可折叠的缩略地图
- * @visibleName 缩略图控件
+ * @visibleName 缩略图控件 - OverviewMapControl
  */
 export default class OverviewMapControl extends Control<OverviewMapControlProps> {
   public constructor(props: any) {

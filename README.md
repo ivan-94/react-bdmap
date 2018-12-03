@@ -8,11 +8,10 @@
 [![npm](https://img.shields.io/npm/v/react-bdmap.svg)](https://www.npmjs.com/package/react-bdmap)
 [![npm](https://img.shields.io/npm/dm/react-bdmap.svg)](https://www.npmjs.com/package/react-bdmap)
 [![license](https://img.shields.io/github/license/carney520/react-bdmap.svg)](https://github.com/carney520/react-bdmap)
+[![circleCI](https://img.shields.io/circleci/project/github/carney520/react-bdmap.svg)](https://circleci.com/gh/carney520/react-bdmap/tree/master)
 
 > react-bdmap 是基于 React 封装的百度地图组件库. 以 React 组件化的思维来, 声明式地开发地图应用. 除了内置组件,
 > react-bdmap 也封装了一些易用的组件帮助实现自定义地图组件. 欢迎交流或贡献代码
-
-## 项目目前处于开发阶段
 
 ## Requirement
 

@@ -9,6 +9,7 @@ export interface TrafficLayerProps {
 
 /**
  * 表示交通流量图层, 继承TileLayer
+ * @visibleName 交通流量图层 - TrafficLayer
  */
 export default class TrafficLayer extends TileLayer<TrafficLayerProps> {
   public constructor(props: TrafficLayerProps) {

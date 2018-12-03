@@ -10,7 +10,7 @@ module.exports = {
       content: 'README.md',
     },
     {
-      name: '容器',
+      name: '基础',
       components: ['src/BDMapLoader.tsx', 'src/BDMap.tsx'],
       sectionDepth: 1,
     },
@@ -19,7 +19,7 @@ module.exports = {
       components: 'src/controls/[A-Z]*.tsx',
       sections: [
         {
-          name: '版权控件',
+          name: '版权控件 - CopyrightControl',
           components: ['src/controls/CopyrightControl/*.tsx'],
         },
       ],

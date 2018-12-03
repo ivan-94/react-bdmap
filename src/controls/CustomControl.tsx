@@ -29,7 +29,7 @@ export function getClass() {
 
 /**
  * 用于实现自定义控件. 默认位于地图的右上方
- * @visibleName 自定义控件
+ * @visibleName 自定义控件 - CustomControl
  */
 export default class CustomControl extends Control<CustomControlProps> {
   private elm = document.createElement('div')

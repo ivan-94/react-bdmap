@@ -17,6 +17,7 @@ export interface CustomTileLayerProps {
 
 /**
  * 自定义图层
+ * @visibleName 自定义瓦片图层 - CustomTileLayer
  */
 export default class CustomTileLayer extends TileLayer<CustomTileLayerProps> {
   public constructor(props: CustomTileLayerProps) {
