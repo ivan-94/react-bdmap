@@ -22,7 +22,8 @@
     "build": "tsc -d --outDir ./dist --module CommonJS ",
     "build:doc": "styleguidist build",
     "start:doc": "styleguidist server",
-    "deploy:doc": "gh-pages -d styleguide"
+    "deploy:doc": "gh-pages -d styleguide",
+    "test": "jest"
   },
   "repository": {
     "type": "git",
@@ -80,8 +81,11 @@
     "webpack": "^4.26.0"
   },
   "dependencies": {
+    "@types/jest": "^23.3.10",
+    "jest": "^23.6.0",
     "lodash": "^4.17.11",
     "shallowequal": "^1.1.0",
+    "ts-jest": "^23.10.5",
     "tslib": "^1.9.3"
   }
 }

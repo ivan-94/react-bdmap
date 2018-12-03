@@ -55,7 +55,7 @@ export function override<T extends Function>(name: string, callback: T) {
 }
 
 export function hasEquals(a: any) {
-  return isObject(a) && 'equals' in a
+  return isObject(a) && 'equals' in a && typeof a.equals === 'function'
 }
 
 export function settableEquals(val1: any, val2: any) {
@@ -97,7 +97,7 @@ export function initializeEnableableProperties(properties: string[], instance: o
 /**
  * 转换foo_bar 为 onfoobar
  */
-const getBDEventHandleName = memoize((event: string) => {
+export const getBDEventHandleName = memoize((event: string) => {
   return `on${event.split('_').join('')}`
 })
 
@@ -108,7 +108,7 @@ const abbrMap = {
 /**
  * 转换foo_bar 为 FooBar, 并将转换一些简写，如dbl -> double
  */
-const getPropsEventHandleName = memoize((event: string) => {
+export const getPropsEventHandleName = memoize((event: string) => {
   return event
     .split('_')
     .map(word => upperFirst(word in abbrMap ? abbrMap[word] : word))
