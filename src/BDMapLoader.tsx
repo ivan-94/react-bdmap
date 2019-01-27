@@ -17,6 +17,10 @@ export interface BDMapLoaderProps {
    */
   apiKey: string
   /**
+   * 版本
+   */
+  version?: string
+  /**
    * 用于展示加载中或错误状态
    */
   fallback?: (error?: Error) => React.ReactNode
@@ -33,6 +37,10 @@ const DEFAULT_RETRY_TIME = 3
  * BDMapLoader 用于加载百度地图依赖
  */
 export default class BDMapLoader extends React.Component<BDMapLoaderProps> {
+  public static defaultProps = {
+    version: '3.0',
+  }
+
   /**
    * 全局可能存在多个Loader同时渲染, 但是只能由一个负责加载
    */
@@ -86,7 +94,7 @@ export default class BDMapLoader extends React.Component<BDMapLoaderProps> {
    * load bdmap in script tag
    */
   private async loadMap() {
-    const src = `//api.map.baidu.com/api?v=3.0&ak=${this.props.apiKey}&callback=loadBDMap`
+    const src = `//api.map.baidu.com/api?v=${this.props.version}&ak=${this.props.apiKey}&callback=loadBDMap`
     window.loadBDMap = () => {
       // flush queue
       const queue = BDMapLoader.waitQueue
