@@ -1,14 +1,23 @@
 import * as utils from '../utils'
 
-test('time delay', () => {
-  jest.useFakeTimers()
-  const time = 1000
-  const fn = jest.fn()
-  const promise = utils.delay(time).then(fn)
-  jest.advanceTimersByTime(300)
-  expect(fn).not.toBeCalled()
-  jest.advanceTimersByTime(time)
-  return expect(promise).resolves.toBe(undefined)
+describe('test timer', () => {
+  beforeAll(() => {
+    jest.useFakeTimers()
+  })
+
+  afterAll(() => {
+    jest.useRealTimers()
+  })
+
+  test('time delay', () => {
+    const time = 1000
+    const fn = jest.fn()
+    const promise = utils.delay(time).then(fn)
+    jest.advanceTimersByTime(300)
+    expect(fn).not.toBeCalled()
+    jest.advanceTimersByTime(time)
+    return expect(promise).resolves.toBe(undefined)
+  })
 })
 
 test('method override', () => {
@@ -48,14 +57,14 @@ describe('load dependency by importScript', async () => {
   })
 
   it('should reject on error', async () => {
-    let promise = utils.importScript('bar')
+    let promise = utils.importScript('baz')
     const script = document.head!.lastElementChild!
     const onerror = script['onerror']
     expect(onerror).toBeDefined()
     setTimeout(() => {
       onerror()
     })
-    expect(promise).rejects.toThrow('The Script bar is no accessible.')
+    return expect(promise).rejects.toBeInstanceOf(URIError)
   })
 })
 
