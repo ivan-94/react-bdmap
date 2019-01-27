@@ -258,7 +258,7 @@ export default class BDMap extends React.Component<BDMapProps, State> {
     }
 
     updateEnableableProperties(BDMAP_ENABLEABLE_PROPERTIES, this.map, this.props, prevProps)
-    updateSettableProperties(BDMAP_SETTABLE_PROPERTIES, this.map, this.props, prevProps)
+    updateSettableProperties(BDMAP_SETTABLE_PROPERTIES, this.map, this.props, prevProps, this)
 
     // update eventListeners
     updateEvents(BDMAP_EVENTS, this.map, this.props, prevProps, this)
@@ -441,4 +441,10 @@ export default class BDMap extends React.Component<BDMapProps, State> {
   private triggerCenterChange = debounce(() => {
     this.props.onCenterChange!(this.map.getCenter())
   }, this.props.centerChangeDelay || 50)
+
+  private setCenter = (point: BMap.Point) => {
+    if (this.map) {
+      this.map.centerAndZoom(point, this.map.getZoom())
+    }
+  }
 }

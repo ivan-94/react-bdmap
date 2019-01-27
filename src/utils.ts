@@ -134,7 +134,13 @@ export function initializeEvents(events: string[], instance: object, props: obje
   })
 }
 
-export function updateSettableProperties(properties: string[], instance: object, props: object, prevProps: object) {
+export function updateSettableProperties(
+  properties: string[],
+  instance: object,
+  props: object,
+  prevProps: object,
+  context?: object,
+) {
   properties.forEach(property => {
     // 尝试使用Baidu对象自带的equals进行比较
     const currentValue = props[property]
@@ -142,7 +148,10 @@ export function updateSettableProperties(properties: string[], instance: object,
     if (!settableEquals(currentValue, prevValue)) {
       const value = props[property]
       const methodName = `set${upperFirst(property)}`
-      if (typeof instance[methodName] === 'function') {
+
+      if (context && typeof context[methodName] === 'function') {
+        context[methodName](value)
+      } else if (typeof instance[methodName] === 'function') {
         instance[methodName](value)
       }
     }
