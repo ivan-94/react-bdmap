@@ -51,6 +51,7 @@ export interface PolylineProps {
 }
 
 const PROPERTIES = ['path', 'strokeColor', 'strokeOpacity', 'strokeWeight', 'strokeStyle']
+const FORCE_RELOAD_PROPERTIES = ['path']
 const ENABLEABLE_PROPERTIES = ['editing', 'massClear']
 const EVENTS = ['click', 'dbl_click', 'mouse_down', 'mouse_up', 'mouse_out', 'mouse_over', 'remove', 'line_update']
 
@@ -68,6 +69,7 @@ export default class Polyline extends Overlay<PolylineProps> {
     super(props)
     this.extendedProperties = PROPERTIES
     this.extendedEnableableProperties = ENABLEABLE_PROPERTIES
+    this.extendedForceReloadProperties = FORCE_RELOAD_PROPERTIES
     this.extendedEvents = EVENTS
     const { path = [], enableClicking } = this.props
 

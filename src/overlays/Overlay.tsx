@@ -10,6 +10,8 @@ import {
   updateEnableableProperties,
   initializeEvents,
   updateEvents,
+  isDesktop,
+  settableEquals,
 } from '../utils'
 
 export type PaneType =
@@ -43,6 +45,10 @@ export default abstract class Overlay<P> extends React.PureComponent<OverlayProp
    */
   protected extendedEnableableProperties: string[] = []
   protected extendedEvents: string[] = []
+  /**
+   * 这些属性变动将强制重新绘制
+   */
+  protected extendedForceReloadProperties: string[] = []
   protected initialize?: () => void
   protected customRender?: () => React.ReactNode
   protected getPosition?: () => BMap.Point | undefined
@@ -107,5 +113,28 @@ export default abstract class Overlay<P> extends React.PureComponent<OverlayProp
 
     // update Events
     updateEvents(this.extendedEvents, this.instance, this.props, prevProps, this)
+    this.forceReloadIfNeed(this.props, prevProps)
+  }
+
+  /**
+   * 判断是否需要重新渲染
+   */
+  private forceReloadIfNeed(props: P, prevProps: P) {
+    if (!isDesktop && this.extendedForceReloadProperties.length) {
+      let shouldReload = false
+      for (let property of this.extendedForceReloadProperties) {
+        const currentValue = props[property]
+        const prevValue = prevProps[property]
+        if (!settableEquals(currentValue, prevValue)) {
+          shouldReload = true
+          break
+        }
+      }
+
+      if (shouldReload) {
+        const map = this.context.container!
+        map.reloadOverlays()
+      }
+    }
   }
 }

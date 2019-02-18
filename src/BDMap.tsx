@@ -9,6 +9,7 @@ import {
   override,
   updateEnableableProperties,
   updateSettableProperties,
+  isDesktop,
 } from './utils'
 
 export interface BDMapProps {
@@ -418,6 +419,19 @@ export default class BDMap extends React.Component<BDMapProps, State> {
     })
   }
 
+  /**
+   * 重新刷新overlay。在移动端polyline，circle这些内置overlay变动留下惨影
+   * 目前官方还没有修复该问题。只能通过clearOverlays强制重新绘制
+   */
+  public reloadOverlays() {
+    const map = this.getInstance()
+    if (map && !isDesktop) {
+      const overlays = map.getOverlays()
+      map.clearOverlays()
+      overlays.forEach(i => map.addOverlay(i))
+    }
+  }
+
   protected handleZoomEnd = override('onZoomEnd', (evt: any) => {
     if (this.props.onZoomChange) {
       this.props.onZoomChange(this.map.getZoom())
@@ -442,7 +456,7 @@ export default class BDMap extends React.Component<BDMapProps, State> {
     this.props.onCenterChange!(this.map.getCenter())
   }, this.props.centerChangeDelay || 50)
 
-  private setCenter = (point: BMap.Point) => {
+  protected setCenter = (point: BMap.Point) => {
     if (this.map) {
       this.map.centerAndZoom(point, this.map.getZoom())
     }
