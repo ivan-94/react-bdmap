@@ -136,7 +136,7 @@ react-bdmap
 
 ## 文档
 
-[https://carney520.github.io/react-bdmap/](https://carney520.github.io/react-bdmap/)
+[https://ivan-94.github.io/react-bdmap/](https://ivan-94.github.io/react-bdmap/)
 
 <br/>
 
