@@ -1,5 +1,6 @@
 import React from 'react'
 import debounce from 'lodash/debounce'
+import throttle from 'lodash/throttle'
 import {
   isAndroid,
   initializeEvents,
@@ -10,6 +11,7 @@ import {
   updateEnableableProperties,
   updateSettableProperties,
   isDesktop,
+  requestIdleCallback,
 } from './utils'
 
 export interface BDMapProps {
@@ -223,6 +225,8 @@ const BDMAP_EVENTS = [
 
 export const BDMapContext = React.createContext<BDMapContextValue>({})
 
+const MOVEEND_EVENT = { type: 'onmoveend' }
+
 /**
  * 这是Baidu地图的核心组件, 表示一个地图实例. 所有控件, 覆盖物, 图层都是在这个上下文中进行渲染
  */
@@ -244,6 +248,7 @@ export default class BDMap extends React.Component<BDMapProps, State> {
   }
   private el = React.createRef<HTMLDivElement>()
   private map: BMap.Map
+  private requestDisposer?: () => void
 
   public componentDidMount() {
     if (window.BMap) {
@@ -424,11 +429,28 @@ export default class BDMap extends React.Component<BDMapProps, State> {
    * 目前官方还没有修复该问题。只能通过clearOverlays强制重新绘制
    */
   public reloadOverlays() {
+    this.triggerRender()
+  }
+
+  /**
+   * reloadOverlay不应该重复执行
+   */
+  private triggerRender = throttle(() => {
+    if (!isDesktop) {
+      // 放进任务队列
+      if (this.requestDisposer) {
+        this.requestDisposer()
+      }
+      this.requestDisposer = requestIdleCallback(this.rerender)
+    }
+  }, 300)
+
+  // 触发覆盖物重新渲染，去除残影
+  private rerender = () => {
     const map = this.getInstance()
-    if (map && !isDesktop) {
-      const overlays = map.getOverlays()
-      map.clearOverlays()
-      overlays.forEach(i => map.addOverlay(i))
+    if (map) {
+      // @ts-ignore 这是BDMAP的内部方法
+      map.dispatchEvent(MOVEEND_EVENT)
     }
   }
 
