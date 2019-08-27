@@ -1,3 +1,16 @@
+declare global {
+  namespace BMap {
+    interface Map {
+      addEventListener(event: string, handler: Function): void
+      removeEventListener(event: string, handler: Function): void
+    }
+
+    interface Overlay {
+      owner?: any
+    }
+  }
+}
+
 export { default as BDMapLoader } from './BDMapLoader'
 export { default as BDMap } from './BDMap'
 export { default as withMap } from './withMap'
@@ -28,3 +41,5 @@ export { default as CustomLayer } from './tileLayers/CustomLayer'
 export { default as CustomTileLayer } from './tileLayers/CustomTileLayer'
 export { default as TileLayer } from './tileLayers/TileLayer'
 export { default as TrafficLayer } from './tileLayers/TrafficLayer'
+// clusterer
+export * from './Clusterer'

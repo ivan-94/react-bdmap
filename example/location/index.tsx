@@ -1,7 +1,7 @@
 import React, { FC, useState, useEffect, useCallback } from 'react'
 import ReactDOM from 'react-dom'
 
-import { BDMapLoader, BDMap, Polyline, Marker, CustomOverlay, ScaleControl, NavigationControl } from '../src'
+import { BDMapLoader, BDMap, Polyline, Marker, CustomOverlay, ScaleControl, NavigationControl } from '../../src'
 
 import './style.css'
 
@@ -28,9 +28,12 @@ const Map: FC = props => {
       setPoints(points => {
         const pts = [...points]
         for (let i = 0; i < pts.length; i++) {
-          const mup = i % 2 === 0 ? -1 : 1
-          if (Math.random() > 0.5) {
-            pts[i] = new BMap.Point(center.lng + mup * Math.random(), center.lat + mup * Math.random())
+          const shoudUpdate = Math.floor((Math.random() * 100) % 4) === 0
+          if (shoudUpdate) {
+            const mup = (i % 2 === 0 ? -1 : 1) * 0.001
+            if (Math.random() > 0.5) {
+              pts[i] = new BMap.Point(center.lng + mup * Math.random(), center.lat + mup * Math.random())
+            }
           }
         }
         return pts

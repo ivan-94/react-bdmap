@@ -30,13 +30,15 @@ export function getClass() {
   // @ts-ignore BMap.Overlay 其实是类
   return class extends BMap.Overlay {
     public position: BMap.Point
+    public owner: CustomOverlay
     public offset?: BMap.Size
     public elm: HTMLDivElement
     public pane: PaneType
     public map: BMap.Map
 
-    public constructor(position: BMap.Point, elm: HTMLDivElement, pane: PaneType = 'markerPane') {
+    public constructor(owner: CustomOverlay, position: BMap.Point, elm: HTMLDivElement, pane: PaneType = 'markerPane') {
       super()
+      this.owner = owner
       this.position = position
       this.elm = elm
       this.pane = pane
@@ -66,6 +68,10 @@ export function getClass() {
       this.draw()
     }
 
+    public getPosition = () => {
+      this.position
+    }
+
     public setOffset = (offset: BMap.Size) => {
       this.offset = offset
       this.draw()
@@ -93,7 +99,7 @@ export default class CustomOverlay extends Overlay<CustomOverlayProps> {
     }
     const { pane, position } = this.props
     this.extendedProperties = PROPERTIES
-    this.instance = new CustomOverlay.CustomOverlayInner(position, this.elm, pane)
+    this.instance = new CustomOverlay.CustomOverlayInner(this, position, this.elm, pane)
   }
 
   protected customRender = () => {

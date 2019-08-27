@@ -30,6 +30,13 @@ export interface ChildrenInjectedProps {
   overlay?: BMap.Overlay
 }
 
+export function isOverlay(el: React.ElementType | null) {
+  if (React.isValidElement(el)) {
+    return el.type instanceof Overlay
+  }
+  return false
+}
+
 /**
  * Overlay 是一个抽象类, 是所有覆盖物的父类. 负责管理覆盖物的生命周期, 初始化和更新属性/事件. 如果要实现更高级的自定义覆盖物
  * 可以继承该类.
@@ -38,6 +45,7 @@ export interface ChildrenInjectedProps {
 export default abstract class Overlay<P> extends React.PureComponent<OverlayProps & P> {
   public static contextType = BDMapContext
   public context!: React.ContextType<typeof BDMapContext>
+  public isOverlay = true
   protected instance: BMap.Overlay
   protected extendedProperties: string[] = []
   /**
@@ -50,6 +58,7 @@ export default abstract class Overlay<P> extends React.PureComponent<OverlayProp
    */
   protected extendedForceReloadProperties: string[] = []
   protected initialize?: () => void
+  protected destroy?: () => void
   protected customRender?: () => React.ReactNode
   protected getPosition?: () => BMap.Point | undefined
 
@@ -59,6 +68,7 @@ export default abstract class Overlay<P> extends React.PureComponent<OverlayProp
     }
 
     if (this.instance && this.context) {
+      this.instance.owner = this
       this.context.nativeInstance!.addOverlay(this.instance)
       // 添加到地图后才能正式进行DOM操作
       this.initialProperties()
@@ -72,6 +82,10 @@ export default abstract class Overlay<P> extends React.PureComponent<OverlayProp
   public componentWillUnmount() {
     if (this.instance && this.context) {
       this.context.nativeInstance!.removeOverlay(this.instance)
+    }
+
+    if (this.destroy) {
+      this.destroy()
     }
   }
 
