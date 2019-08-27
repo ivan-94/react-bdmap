@@ -23,7 +23,9 @@ export type PaneType =
   | 'markerShadow'
   | 'mapPane'
 
-export interface OverlayProps {}
+export interface OverlayProps {
+  customData?: any
+}
 
 export interface ChildrenInjectedProps {
   position?: BMap.Point
