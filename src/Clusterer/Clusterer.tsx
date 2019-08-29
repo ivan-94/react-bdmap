@@ -123,7 +123,14 @@ export class Clusterer extends Overlay<ClustererProps> {
     var extendedBounds = getExtendedBounds(this.map, mapBounds, this.props.gridSize)
 
     this.markers.forEach(m => {
-      if (!m.isInCluster && extendedBounds.containsPoint(m.getPosition())) {
+      const pos = m.getPosition()
+      if (pos == null) {
+        this.map.addOverlay(m)
+        m.isInCluster = false
+        return
+      }
+
+      if (!m.isInCluster && extendedBounds.containsPoint(pos)) {
         // 添加到最近的聚合点
         this.addToClosestCluster(m)
       }

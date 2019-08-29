@@ -69,7 +69,7 @@ export function getClass() {
     }
 
     public getPosition = () => {
-      this.position
+      return this.position
     }
 
     public setOffset = (offset: BMap.Size) => {
@@ -102,7 +102,7 @@ export default class CustomOverlay extends Overlay<CustomOverlayProps> {
     this.instance = new CustomOverlay.CustomOverlayInner(this, position, this.elm, pane)
   }
 
-  protected customRender = () => {
+  protected customRender = (): React.ReactElement => {
     return ReactDOM.createPortal(this.props.children, this.elm)
   }
 

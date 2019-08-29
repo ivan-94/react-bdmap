@@ -1,6 +1,6 @@
 {
   "name": "react-bdmap",
-  "version": "0.2.0",
+  "version": "0.2.3",
   "description": "Baidu Map Components for React. React Baidu地图组件库",
   "keywords": [
     "地图",
@@ -82,7 +82,7 @@
     "react-styleguidist": "^8.0.6",
     "react-test-renderer": "^16.6.3",
     "rimraf": "^2.6.2",
-    "typescript": "^3.1.6",
+    "typescript": "^3.5.3",
     "webpack": "^4.26.0"
   },
   "dependencies": {

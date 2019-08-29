@@ -44,7 +44,7 @@ export default class CustomControl extends Control<CustomControlProps> {
     this.instance = new CustomControl.CustomControlInner(this.elm)
   }
 
-  public render() {
+  public render(): React.ReactElement {
     return ReactDOM.createPortal(this.props.children, this.elm)
   }
 }

@@ -26,7 +26,7 @@ export default class Item extends React.PureComponent<CopyrightItemProps> {
     }
   }
 
-  public render() {
+  public render(): React.ReactElement {
     return ReactDOM.createPortal(this.props.children, this.innerEl)
   }
 

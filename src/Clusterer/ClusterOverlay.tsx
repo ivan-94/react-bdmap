@@ -40,7 +40,6 @@ function getClass() {
     public initialize = (map: BMap.Map) => {
       this.elm.style.position = 'absolute'
       this.elm.style.transform = 'translate(-50%, -50%)'
-      this.elm.style.opacity = '0.5'
       this.map = map
       ;(map.getPanes()[this.pane] as HTMLElement).appendChild(this.elm)
       return this.elm
@@ -69,7 +68,7 @@ function getClass() {
     }
 
     public getPosition = () => {
-      this.position
+      return this.position
     }
 
     public setSize(size: number) {
@@ -154,7 +153,7 @@ export class ClusterOverlay {
    * 销毁
    */
   public remove() {
-    this.markers.forEach(o => o.getMap() && this.map.removeOverlay(o))
+    this.markers.forEach(o => this.map.removeOverlay(o))
     if (this.overlay) {
       this.map.removeOverlay(this.overlay)
     }
